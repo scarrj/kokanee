@@ -1,0 +1,44 @@
+{
+  "zone": {
+    "id": "z-robert-smith",
+    "name": "Mount Robert Smith Area",
+    "color": "#5f3dc4",
+    "info_point": null,
+    "description": "Mount Robert Smith is located Northwest of Kokanee glacier Cabin and accessed via Enterprise Pass and the Enchanted Forest. This is a longer walk and thus a good location to spend the day. The skin back can be relatively long so be sure you are prepared for the day and for weather and conditions to change.",
+    "source": "backcountryskiingcanada.com (via guide PDF)"
+  },
+  "routes": [
+    {
+      "id": "r07",
+      "num": "7",
+      "zone": "z-robert-smith",
+      "name": "Mount Robert Smith Southeast Face",
+      "time": "3 - 4 hrs",
+      "gain_m": 560,
+      "descent_m": null,
+      "description": "Mount Robert Smith is a fun objective from Kokanee Glacier Cabin which provides a pretty straight forward 340 metre descent. Access is either via skiing Unibomber, Lute Fish, Aquavit or Roll Map as mentioned below or the more common and faster route of skinning through Enterprise Pass. Here we will describe the Enterprise Pass route. From Kokanee glacier Cabin head Northwest to the obvious pass behind the cabin and heli-pad. It's a short 60 metre climb to gain the pass and once through you will begin to descend to the what's know as \"The Enchanted Forest\". Descend only about 20 meters and then start contouring dead west so that you do not loose too much elevation that you will ultimately have to skin back up. Heading West you will enter the trees of the Enchanted Forest and after approximately one kilometre you will emerge in an open value with the routes Unibomber, Lute Fish, Aquavit and Roll Map on your left and the big beautiful Southeast face of Mt. Robert Smith on your right. There are plenty or routes up the face so pick the safest line and be sure to use the few islands of safety. The typical route is to gain the saddle between Mount Robert Smith and the unknown peak to the East. From the saddle the summit is only a short distance away. Be sure avi conditions permit this ascent/descent as do your skills and judgement. Once on the summit the ski down offers plenty of room for everyone and lots of variations. From the valley floor use your up track again or retrace your skin track back to Kokanee glacier Cabin.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r08",
+      "num": "8",
+      "zone": "z-robert-smith",
+      "name": "Mark's Slot",
+      "time": "4 - 5 hrs",
+      "gain_m": 500,
+      "descent_m": null,
+      "description": "Mark's Slot can be found on the North Face of Mt. Robert Smith so follow the directions for that route in order to gain the saddle below and to the East of the summit. Once at the saddle the descent is pretty obvious, you ski down the North face descending to valley bottom. Be aware of cornices on the ridge as they are common as is wind loading just over the ridge as you drop in. There are plenty of lines on this North aspect so you can skin back to the top to try other options or head East from the valley floor trending Southeast to arrive at Tanal Lake and Enterprise Pass. There is huge exposure from both sides once at Tanal Lake and from the West face of Tanal Peak so be sure to stay well away from this face and in the trees. From Tanal Lake the ascent is a moderate 200 metre ski up. Once you reach the pass Kokanee Glacier Cabin is to the East via the heli-pad.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    }
+  ],
+  "pois": [],
+  "areas": []
+}

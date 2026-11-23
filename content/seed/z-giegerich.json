@@ -1,0 +1,59 @@
+{
+  "zone": {
+    "id": "z-giegerich",
+    "name": "Mount Geigerich Area",
+    "color": "#0c8599",
+    "info_point": null,
+    "description": "Mount Giegerich is located close to Lemon Pass and is accessed via Griffin Creek. It will take you a few hours to get over to this summit but the views of this area are worth the walk as is the skiing.",
+    "source": "backcountryskiingcanada.com (via guide PDF)"
+  },
+  "routes": [
+    {
+      "id": "r15",
+      "num": "15",
+      "zone": "z-giegerich",
+      "name": "Molly's Elevens",
+      "time": "3.5 - 4 hrs",
+      "gain_m": 500,
+      "descent_m": null,
+      "description": "Mount Giegerich summit is 2,249 metres and offers up great views of the West side of Kokanee Glacier Park. The ascent is gentle as is the ski down but be aware of cornices forming on the ridge. To access Mount Giegerich from Kokanee Glacier Cabin head West across Kaslo Lake and skin up the low point which is where Griffin Creek empties into Kaslo Lake. It is a relatively steep 160 meter climb and then things flatten out. Follow this valley as if to ascend Nansen Mountain but instead head more Southwesterly to the peak directly South on the same ridge line. There is a sparsely tree ridge line that you can follow to the summit staying well away of the steeper Skol route on Giegerich's more northerly side. From the summit Molly's Eleven route is the most direct line back down more-or-less the way you ascended. It's a long, mellow heli-ski type route so enjoy. The way back to the cabin is the exact way you came so simply follow your tracks.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r16",
+      "num": "16",
+      "zone": "z-giegerich",
+      "name": "Mount Giegerich - Skol",
+      "time": "3.5 - 4 hrs",
+      "gain_m": 500,
+      "descent_m": null,
+      "description": "Mount Giegerich summit is 2,249 metres and offers up great views of the West side of Kokanee Glacier Park. The ascent is gentle as is the ski down but be aware of cornices forming on the ridge. To access Mount Giegerich from Kokanee Glacier Cabin head West across Kaslo Lake and skin up the low point which is where Griffin Creek empties into Kaslo Lake. It is a relatively steep 160 meter climb and then things flatten out. Follow this valley as if to ascend Nansen Mountain but instead head more Southwesterly to the peak directly South on the same ridge line. There is a sparsely tree ridge line that you can follow to the summit staying well away of the steeper Skol route on Giegerich's more northerly side. From the summit Skol is just to the North of the summit and the treed ridge which you likely ascended. Caution is required skiing this route as it is steep and typically Corniced, you will want to ski it one at a time and only in stable conditions. The way back to the Kokanee Glacier Cabin is the exact way you came so simply follow your tracks.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r17",
+      "num": "17",
+      "zone": "z-giegerich",
+      "name": "Mount Giegerich - East Face",
+      "time": "3.5 - 4 hrs",
+      "gain_m": 500,
+      "descent_m": null,
+      "description": "Mount Giegerich summit is 2,249 metres and offers up great views of the West side of Kokanee Glacier Park. The ascent is gentle as is the ski down but be aware of cornices forming on the ridge. To access Mount Giegerich from Kokanee Glacier Cabin head West across Kaslo Lake and skin up the low point which is where Griffin Creek empties into Kaslo Lake. It is a relatively steep 160 meter climb and then things flatten out. Follow this valley as if to ascend Nansen Mountain but instead head more Southwesterly to the peak directly South on the same ridge line. There is a sparsely tree ridge line that you can follow to the summit staying well away of the steeper Skol route on Giegerich's more northerly side. From the summit the East face is the large bowl to the south of the treed ridge line you ascended and just south of Molly's Elevens. There is plenty of room on the East Face to ski it lap after lap, the pitch is not steep but it is sustained. The way back to the Kokanee Glacier Cabin is the exact way you came so simply follow your tracks.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    }
+  ],
+  "pois": [],
+  "areas": []
+}

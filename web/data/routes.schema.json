@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kokanee-app-json.schema.json",
+  "title": "Kokanee App JSON (routes.json)",
+  "description": "Structural schema for web/data/routes.json. Rules 2 (bbox, 6 dp), 3 (unique ids), 5 (polygon closure), 7 (info_point for routed zones) and the full-assembly checks are enforced by model.validate() and tools/validate_routes.py.",
+  "type": "object",
+  "required": ["schema_version", "content_rev", "published_at", "dem_version", "zones", "routes", "pois", "areas"],
+  "properties": {
+    "schema_version": { "type": "integer", "minimum": 1 },
+    "content_rev": { "type": "integer", "minimum": 0 },
+    "published_at": { "type": "string", "format": "date-time" },
+    "dem_version": { "type": "string" },
+    "pilot": { "const": true },
+    "zones": { "type": "array", "items": { "$ref": "#/$defs/zone" } },
+    "routes": { "type": "array", "items": { "$ref": "#/$defs/route" } },
+    "pois": { "type": "array", "items": { "$ref": "#/$defs/poi" } },
+    "areas": { "type": "array", "items": { "$ref": "#/$defs/area" } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "content_rev": { "const": 0 } }, "required": ["content_rev"] },
+      "then": { "required": ["pilot"] }
+    }
+  ],
+  "$defs": {
+    "lonlat": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "number", "minimum": -117.32, "maximum": -117.02 },
+        { "type": "number", "minimum": 49.55, "maximum": 49.87 }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "line": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/lonlat" },
+      "anyOf": [{ "maxItems": 0 }, { "minItems": 2 }]
+    },
+    "zone": {
+      "type": "object",
+      "required": ["id", "name", "color", "info_point", "description", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^z-[a-z0-9-]+$" },
+        "name": { "type": "string" },
+        "color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "info_point": { "anyOf": [{ "$ref": "#/$defs/lonlat" }, { "type": "null" }] },
+        "description": { "type": "string" },
+        "source": { "type": "string" }
+      }
+    },
+    "route": {
+      "type": "object",
+      "required": ["id", "num", "zone", "name", "time", "gain_m", "descent_m", "description", "notes", "approx", "confidence", "descent", "skin"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^(r\\d{2}|si\\d|u-[a-z0-9]+)$" },
+        "num": { "type": "string" },
+        "zone": { "type": "string", "pattern": "^z-[a-z0-9-]+$" },
+        "name": { "type": "string" },
+        "time": { "type": "string" },
+        "gain_m": { "type": ["number", "null"] },
+        "descent_m": { "type": ["number", "null"] },
+        "description": { "type": "string" },
+        "notes": { "type": "string" },
+        "approx": { "type": "boolean" },
+        "confidence": { "enum": ["low", "medium", "high"] },
+        "descent": { "$ref": "#/$defs/line" },
+        "skin": { "$ref": "#/$defs/line" }
+      }
+    },
+    "poi": {
+      "type": "object",
+      "required": ["id", "name", "type", "coord", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "name": { "type": "string" },
+        "type": { "enum": ["hut", "helipad", "peak", "pass", "lake", "landmark"] },
+        "coord": { "$ref": "#/$defs/lonlat" },
+        "description": { "type": "string" }
+      }
+    },
+    "area": {
+      "type": "object",
+      "required": ["id", "name", "kind", "polygon", "description", "source", "valid_from", "valid_to"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^a-[a-z0-9-]+$" },
+        "name": { "type": "string" },
+        "kind": { "enum": ["closure", "no-go", "note"] },
+        "polygon": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 4,
+            "items": { "$ref": "#/$defs/lonlat" }
+          }
+        },
+        "description": { "type": "string" },
+        "source": { "type": "string" },
+        "valid_from": { "type": ["string", "null"] },
+        "valid_to": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

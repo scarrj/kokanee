@@ -1,0 +1,308 @@
+{
+  "schema_version": 1,
+  "content_rev": 0,
+  "published_at": "2026-11-23T21:34:25Z",
+  "dem_version": "none",
+  "pilot": true,
+  "zones": [
+    {
+      "id": "z-hut",
+      "name": "Hut & access",
+      "color": "#868e96",
+      "info_point": null,
+      "description": "KOKANEE GLACIER PROVINCIAL PARK Kokanee Glacier Provincial Park is renowned as one of the best destinations in western Canada for powder skiing. There is lots of snow and a great variety of runs to choose from including bad-weather tree skiing. A new, state-of-the-art cabin makes Kokanee even more of an attraction. The TS maps for the area are Slocan 82F14 and Kokanee Peak 82F11. The CanadaMapStore maps are Mount Ruppel 082F074 and The Battleship 082F075 ACCESS Kokanee Glacier Cabin is reached by helicopter in winter. The weekly hut rate includes the round-trip helicopter fee. During the winter a custodian is stationed at Kokanee Glacier Cabin. He or she is in contact with the outside world and will provide you with Canadian Avalanche Association forecasts and weather forecasts. A Little History The original Slocan Chief Cabin was built in 1896 for the Smuggler Mining Company, and the mine was in operation as late as 1928. The Kokanee Glacier area was made a provincial park in 1922. In the ear- ly years, the cabin was used regularly by local mountaineering groups but it eventually fell into disrepair. By 1962 BC Parks was considering burning the cabin until a group of local mountaineers, headed by Be1en Butling, spent much of that summer rehabilitating the structure. In 1964 additional repairs were undertaken and for the next ten years the Kootenay Mountaineering Club took care of the cabin. In 1974 the structure was taken over by BC Parks. A new Kokanee Glacier Cabin was built in 2002 and replaced the Slocan Chief Cabin for overnight accommodation. This new cabin was built as a result of campaign efforts carried out in memory of Michel Trudeau and the many other Canadians who have lost their lives while enjoying Canada's back-country. The historic Slocan Chief Cabin is now an interpretive centre. Booking Kokanee Glacier Cabin is now administered by the Alpine Club of Canada. The fee for cabin use is subject to change, so please contact the ACC for the most current rates. The cabin rental also includes helicopter access. There is a lottery system in place to decide which lucky groups get to spend a week skiing in paradise. The ACC can be contacted by phone at 403-678-3200 or by email at info@alpineclubofcanada.com. Their website is www.alpineclubofcanada.com. Hut ● Surrounded by epic terrain & endless views. ● Access to backcountry safety & avalanche information.Beacon Basin. Weather Station with CAA InfoEx ● Hydro Electric, Sewage Treatment, Potable Water, Hot Water. Backup propane & outhouse available. Flush toilets, shower stall with shower bag. ● Full Kitchen with electric & gas stoves, cooking supplies & sinks. Gas fireplace, electric baseboard heaters. ● Comfortable living space with board games and books. ● History Museum: The Slocan Chief ● Caretaker with private quarters. Satellite phone & internet available for emergencies. ● Spacious sleeping quarters provided with sleeping pads. ● Gear drying room with gas fireplace. Communications ACC Staff will have a radio to communicate with the helicopter company on flight days. Staff will also have a satellite phone at the cabin. This phone will be used to get updates on weather and avalanche conditions, and for emergencies only. It is highly recommended that you rent your own satellite phone. This can be done at SK Electronics in Nelson. Phone 250-352-7292 for details. Helicpoter Staging Area and Parking Details You will be meeting at the Kootenay Valley Helicopters hangar on your day of departure. (See the map at the end of this document) The entire group should be at the hangar by 8 a.m. (pacific time) where the pilot will explain the process of the morning’s flights. All of your gear will be weighed at the hangar, and the pilot will give a helicopter safety briefing to the entire group - no one can miss this briefing. Your group will then begin flights from the heliport to the cabin. Kootenay Valley Helicopter’s phone number is 250-505-2150. Each return flight will take about 25 minutes, and your group will be flown in four/five flights. If someone, or a group, misses a flight the cost for an extra flight will be in the neighborhood of $1000. This extra flight would be a cost in addition to the money you have paid for the hut and helicopter. If your group requires an additional flight to get your gear in, these additional flight costs will be payable directly to the helicopter company.",
+      "source": "backcountryskiingcanada.com (via guide PDF)"
+    },
+    {
+      "id": "z-john-carter",
+      "name": "Mount John Carter Area",
+      "color": "#2b8a3e",
+      "info_point": null,
+      "description": "Mount John Carter is named for John Carter who worked at Kokanee Glacier Park as a hut custodian and park ranger for many, many years. He also wrote a guide book about the park and died tragically in an avalanche in 1996. Mount John Carter is 2,606 metres high and is connected to Outlook Mountain via a short ridge line.",
+      "source": "backcountryskiingcanada.com (via guide PDF)"
+    },
+    {
+      "id": "z-longer-tours",
+      "name": "Longer Tours",
+      "color": "#c2255c",
+      "info_point": null,
+      "description": "If your energy levels are high, daylight hours long and you are interested in exploring Kokanee Glacier Park then the following two ski tours are ones not to be missed. Both routes take you up the famed Kokanee Glacier (where the park gets its name sake from) and between the Battleship and Mt. Kitchener. From a height of 2,700 metres you get the best views in the park in all directions including East into Coffee Pass, the Sawtooth Ridge and Mount Kane.",
+      "source": "backcountryskiingcanada.com (via guide PDF)"
+    }
+  ],
+  "routes": [
+    {
+      "id": "r26",
+      "num": "26",
+      "zone": "z-john-carter",
+      "name": "Cat Fish Comes Home",
+      "time": "2 - 3.5 hrs",
+      "gain_m": 320,
+      "descent_m": null,
+      "description": "This route is very close to the cabin and lightly treed with many variations to ski. Be sure to lay down good lines as they will be on full display from those at Kokanee Glacier Cabin. Head to the South end of Kaslo Lake from Kokanee Glacier Cabin and start climbing the treed rib between Commission Creek and Outlook Creek. The top is called Riddles Knob and stands at 2160 metres. The ski down is through sparse trees and rolling terrain with a few benches thrown in to keep you alert. After 260 metres you will be back at the shores of Kaslo Lake with the Cabin in sight.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r34",
+      "num": "34",
+      "zone": "z-longer-tours",
+      "name": "The Keyhole",
+      "time": "6 - 7 hrs",
+      "gain_m": 800,
+      "descent_m": null,
+      "description": "Mark's Slot can be found on the North Face of Mt. Robert Smith so follow the directions for that route in order to gain the saddle below and to the East of the summit. Once at the saddle the descent is pretty obvious, you ski down the North face descending to valley bottom. Be aware of cornices on the ridge as they are common as is wind loading just over the ridge as you drop in. There are plenty of lines on this North aspect so you can skin back to the top to try other options or head East from the valley floor trending Southeast to arrive at Tanal Lake and Enterprise Pass. There is huge exposure from both sides once at Tanal Lake and from the West face of Tanal Peak so be sure to stay well away from this face and in the trees. From Tanal Lake the ascent is a moderate 200 metre ski up. Once you reach the pass Kokanee Glacier Cabin is to the East via the heli-pad.",
+      "notes": "Guide note: SOURCE ERROR: description text is a copy of #8 Mark's Slot; approach/descent for The Keyhole is undocumented. ATES has a 'Keyhole' landmark at -117.152373, 49.749477 (between Esmeralda Peak and Kokanee Glacier).",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    }
+  ],
+  "pois": [
+    {
+      "id": "cabin",
+      "name": "Kokanee Glacier Cabin",
+      "type": "hut",
+      "coord": [
+        -117.194844,
+        49.771692
+      ],
+      "description": ""
+    },
+    {
+      "id": "cond-peak",
+      "name": "Cond Peak",
+      "type": "peak",
+      "coord": [
+        -117.142461,
+        49.746727
+      ],
+      "description": ""
+    },
+    {
+      "id": "esmeralda-peak",
+      "name": "Esmeralda Peak",
+      "type": "peak",
+      "coord": [
+        -117.150967,
+        49.747735
+      ],
+      "description": ""
+    },
+    {
+      "id": "keyhole",
+      "name": "Keyhole",
+      "type": "pass",
+      "coord": [
+        -117.152373,
+        49.749477
+      ],
+      "description": ""
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "type": "pass",
+      "coord": [
+        -117.20247,
+        49.779707
+      ],
+      "description": ""
+    },
+    {
+      "id": "enterprise-ridge",
+      "name": "Enterprise Ridge",
+      "type": "peak",
+      "coord": [
+        -117.197778,
+        49.78066
+      ],
+      "description": ""
+    },
+    {
+      "id": "happy-valley",
+      "name": "Happy Valley",
+      "type": "landmark",
+      "coord": [
+        -117.191463,
+        49.779946
+      ],
+      "description": ""
+    },
+    {
+      "id": "sunnyside",
+      "name": "Sunnyside",
+      "type": "landmark",
+      "coord": [
+        -117.192508,
+        49.774907
+      ],
+      "description": ""
+    },
+    {
+      "id": "grizzly-bowl",
+      "name": "Grizzly Bowl",
+      "type": "landmark",
+      "coord": [
+        -117.16653,
+        49.766951
+      ],
+      "description": ""
+    },
+    {
+      "id": "the-apron",
+      "name": "The Apron",
+      "type": "landmark",
+      "coord": [
+        -117.169686,
+        49.771616
+      ],
+      "description": ""
+    },
+    {
+      "id": "giants-kneecap",
+      "name": "Giants Kneecap",
+      "type": "landmark",
+      "coord": [
+        -117.155455,
+        49.755305
+      ],
+      "description": ""
+    },
+    {
+      "id": "joker-basin",
+      "name": "Joker Basin",
+      "type": "landmark",
+      "coord": [
+        -117.148725,
+        49.768465
+      ],
+      "description": ""
+    },
+    {
+      "id": "the-battleship",
+      "name": "The Battleship",
+      "type": "landmark",
+      "coord": [
+        -117.163755,
+        49.758329
+      ],
+      "description": ""
+    },
+    {
+      "id": "sunny-smugglers",
+      "name": "Sunny Smugglers",
+      "type": "landmark",
+      "coord": [
+        -117.181735,
+        49.761357
+      ],
+      "description": ""
+    },
+    {
+      "id": "smugglers",
+      "name": "Smugglers",
+      "type": "landmark",
+      "coord": [
+        -117.180442,
+        49.765987
+      ],
+      "description": ""
+    },
+    {
+      "id": "smugglers-ridge",
+      "name": "Smugglers Ridge",
+      "type": "peak",
+      "coord": [
+        -117.177439,
+        49.762665
+      ],
+      "description": ""
+    },
+    {
+      "id": "griffin-creek",
+      "name": "Griffin Creek",
+      "type": "landmark",
+      "coord": [
+        -117.205327,
+        49.766789
+      ],
+      "description": ""
+    },
+    {
+      "id": "mount-giegerich",
+      "name": "Mount Giegerich",
+      "type": "peak",
+      "coord": [
+        -117.220268,
+        49.755746
+      ],
+      "description": ""
+    },
+    {
+      "id": "saphire-lakes",
+      "name": "Saphire Lakes",
+      "type": "lake",
+      "coord": [
+        -117.207811,
+        49.751693
+      ],
+      "description": ""
+    },
+    {
+      "id": "glory-basin",
+      "name": "Glory Basin",
+      "type": "landmark",
+      "coord": [
+        -117.19985,
+        49.73676
+      ],
+      "description": ""
+    },
+    {
+      "id": "mount-john-carter",
+      "name": "Mount John Carter",
+      "type": "peak",
+      "coord": [
+        -117.19196,
+        49.740111
+      ],
+      "description": ""
+    },
+    {
+      "id": "outlook-mountain",
+      "name": "Outlook Mountain",
+      "type": "peak",
+      "coord": [
+        -117.195812,
+        49.731264
+      ],
+      "description": ""
+    },
+    {
+      "id": "repeater-tower",
+      "name": "Repeater Tower",
+      "type": "landmark",
+      "coord": [
+        -117.156938,
+        49.752723
+      ],
+      "description": ""
+    },
+    {
+      "id": "mount-kitchener",
+      "name": "Mount Kitchener",
+      "type": "peak",
+      "coord": [
+        -117.165248,
+        49.754638
+      ],
+      "description": ""
+    }
+  ],
+  "areas": []
+}

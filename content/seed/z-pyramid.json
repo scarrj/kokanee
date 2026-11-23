@@ -1,0 +1,89 @@
+{
+  "zone": {
+    "id": "z-pyramid",
+    "name": "The Pyramid Area",
+    "color": "#e8590c",
+    "info_point": null,
+    "description": "The Pyramid is easily viewable from the decks of Kokanee Glacier Cabin by looking Southwest. It's found a few hundred metres down the North ridge of Mount Kitchener and looks like a pyramid from a distance. The Nothwest face offers some good skiing very close to the cabin however the upper routes are often wind scoured by prevailing winds coming North from Kokanee Lake Pass.",
+    "source": "backcountryskiingcanada.com (via guide PDF)"
+  },
+  "routes": [
+    {
+      "id": "r29",
+      "num": "29",
+      "zone": "z-pyramid",
+      "name": "Field of Dreams",
+      "time": "2 - 3 hrs",
+      "gain_m": 280,
+      "descent_m": null,
+      "description": "Fields of Dreams is the closest route to Kokanee Glacier Cabin listed in this section. It provides a quick lap with good pitch in open alpine terrain. From Kokanee glacier Cabin follow the summer trail to the Slocan Chief Cabin but once you reach the highpoint, instead of descending down into the Kalmia Lake area stay on the ridge and continue climbing Southeast up Smuggler's Ridge. After a short one kilometer skin you will be at the starting point of Field of Dreams. Ski down amongst the sparse trees avoiding any steeper sections and cliff bands. At the bottom of the valley you should be standing beside Keen Lake and from here it's a short, flat skin back to Kaslo Lake and Kokanee Glacier Cabin.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r30",
+      "num": "30",
+      "zone": "z-pyramid",
+      "name": "J.C.'s",
+      "time": "2 - 3 hrs",
+      "gain_m": 280,
+      "descent_m": null,
+      "description": "J.C.'s starting point is just South of Field of Dreams so the access is the same. Again you will climb Southeast up Smuggler's Ridge and after a short skin you will be at the starting point of J.C.'s. Ski down amongst the sparse trees avoiding any steeper sections and cliff bands. At the bottom of the valley you will only be a short distance to Keen Lake and from here it's a short, flat skin back to Kaslo Lake and Kokanee Glacier Cabin.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r31",
+      "num": "31",
+      "zone": "z-pyramid",
+      "name": "Knee D-2",
+      "time": "3 - 4 hrs",
+      "gain_m": 420,
+      "descent_m": null,
+      "description": "Knee D-2 is a route that starts just below the Pyramid and leads directly into J.C's to provide a much longer ski descent than the previous two routes mentioned. To access Knee D-2 again climb Southeast up Smuggler's Ridge, this time skin higher up to 2,400 metres just below The Pyramid. Caution is required as the terrain is open and gradually gets steeper as you skin higher. Ski down with caution eventually reaching the start of J.C.'s and continue skiing amongst the sparse trees avoiding any steeper sections and cliff bands. At the bottom of the valley you will only be a short distance to Keen Lake and from here it's a short, flat skin back to Kaslo Lake and Kokanee Glacier Cabin.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r32",
+      "num": "32",
+      "zone": "z-pyramid",
+      "name": "Knee Dropping Tree Fairy",
+      "time": "3.5 - 4.5 hrs",
+      "gain_m": 540,
+      "descent_m": null,
+      "description": "Knee Dropping Tree Fairy is a much longer run as it starts just above and to the South of The Pyramid with a descent of 540 metres when you include Field of Dreams which this route leads right into. The access from Kokanee Glacier Cabin is again via Smuggler's Ridge, this time skin higher up to 2,500 metres. Caution is required as the terrain is open, typically wind swept and gradually gets steeper as you skin higher. Ski down with caution eventually reaching Field of Dreams and continue skiing amongst the sparse trees avoiding any steeper sections and cliff bands. At the bottom of the valley you will only be standing next to Keen Lake and from here it's a short, flat skin back to Kaslo Lake and Kokanee Glacier Cabin.",
+      "notes": "",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r33",
+      "num": "33",
+      "zone": "z-pyramid",
+      "name": "Squat to Pee",
+      "time": "4 - 5 hrs",
+      "gain_m": 680,
+      "descent_m": null,
+      "description": "Squat to pee is a short but steep route which is located on the ridge between The Pyramid and Mt. Kitchener. It only provides 140 metres of skiing but from its terminus you can then ski Knee Dropping Tree Fairy and then Filed of Dreams for the full 660m metre descent. The upper reaches of the Pyramid are steep and typically wind scoured so caution and good avi senses are required. At the bottom of the valley you will only be close to Keen Lake depending upon if you skied Field of Dreams or J.C.'s. From here it's a short, flat skin back to Kaslo Lake and Kokanee Glacier Cabin.",
+      "notes": "Guide note: Text says 'Filed of Dreams' (= Field of Dreams).",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    }
+  ],
+  "pois": [],
+  "areas": []
+}

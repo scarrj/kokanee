@@ -1,0 +1,44 @@
+{
+  "zone": {
+    "id": "z-longer-tours",
+    "name": "Longer Tours",
+    "color": "#c2255c",
+    "info_point": null,
+    "description": "If your energy levels are high, daylight hours long and you are interested in exploring Kokanee Glacier Park then the following two ski tours are ones not to be missed. Both routes take you up the famed Kokanee Glacier (where the park gets its name sake from) and between the Battleship and Mt. Kitchener. From a height of 2,700 metres you get the best views in the park in all directions including East into Coffee Pass, the Sawtooth Ridge and Mount Kane.",
+    "source": "backcountryskiingcanada.com (via guide PDF)"
+  },
+  "routes": [
+    {
+      "id": "r34",
+      "num": "34",
+      "zone": "z-longer-tours",
+      "name": "The Keyhole",
+      "time": "6 - 7 hrs",
+      "gain_m": 800,
+      "descent_m": null,
+      "description": "Mark's Slot can be found on the North Face of Mt. Robert Smith so follow the directions for that route in order to gain the saddle below and to the East of the summit. Once at the saddle the descent is pretty obvious, you ski down the North face descending to valley bottom. Be aware of cornices on the ridge as they are common as is wind loading just over the ridge as you drop in. There are plenty of lines on this North aspect so you can skin back to the top to try other options or head East from the valley floor trending Southeast to arrive at Tanal Lake and Enterprise Pass. There is huge exposure from both sides once at Tanal Lake and from the West face of Tanal Peak so be sure to stay well away from this face and in the trees. From Tanal Lake the ascent is a moderate 200 metre ski up. Once you reach the pass Kokanee Glacier Cabin is to the East via the heli-pad.",
+      "notes": "Guide note: SOURCE ERROR: description text is a copy of #8 Mark's Slot; approach/descent for The Keyhole is undocumented. ATES has a 'Keyhole' landmark at -117.152373, 49.749477 (between Esmeralda Peak and Kokanee Glacier).",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    },
+    {
+      "id": "r35",
+      "num": "35",
+      "zone": "z-longer-tours",
+      "name": "Gray's Peak",
+      "time": "8 - 10 hrs",
+      "gain_m": 800,
+      "descent_m": null,
+      "description": "Gray's Peak is the ultimate big objective from Kokanee Glacier Cabin as takes a full day and lots of energy to complete as this is one of the highest peaks in the park. You will traverse Kokanee Glacier from its North end to to its South and get views of near-by Nelson from the 2,753 metre summit. You will cover approximately 22 kilometres round trip and reach the Southern boundary of the park crossing significant glaciated terrain so prepare accordingly and ensure you have enough skill, good weather and solid conditions. To reach the summit of Gray's Peak follow the directions to The Keyhole found above but continue on past Cond Peak (2,801) metres) and Kokanee Peak (2,790 metres). Once past Kokanee Peak you will get your first glimpse of Gray's Peak in the distance to the far South. After a brief descent of a few hundred metres you will end up at the saddle of Kokanee Peak and Gray's Peak, mark this spot as this is where you will descend heading West once you summit Gray's Peak itself. From here continue climbing another 220 metre to gain the summit of Gray's Peak. The last 15 metres is very steep and slightly exposed so you may want to boot pack this portions if conditions permit. The route down is by skiing back to the saddle we spoke of earlier. Ski down the West face contouring North as you go. Be careful not to ski lower than 2,000 meter elevation as you need to gain Kokanee Lake at this elevation. The terrain is very benchy and rolling so the ski tour back home is not as straight forward as you may think. This Tour will take a full day so leave early and be very well prepared.",
+      "notes": "Guide note: Refers to The Keyhole directions, which are missing (see r34).",
+      "approx": true,
+      "confidence": "low",
+      "descent": [],
+      "skin": []
+    }
+  ],
+  "pois": [],
+  "areas": []
+}
