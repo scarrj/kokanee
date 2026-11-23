@@ -13,7 +13,7 @@ The orchestrator maintains this log. Agent reports are appended unchanged (forma
 | WS6 store+editor | done | — | main | 5/5 acceptance in browser pane; conflict dialog, recovery slots, GPX, publish rev bump; mobile 44px handles |
 | WS7 pwa | partial | — | main | SW/offline built; browser pane blocks SW registration, so offline acceptance must run in real Chrome; index.html tags forwarded to WS3 |
 | WS8 geometry | done | — | main | r26 OK (-25% vs guide, MRDEM 100%); r34 OK via Keyhole notch (low confidence); closure is a TEST polygon; r34 skin steep step open |
-| WS9 QA | blocked | — | | |
+| WS9 QA | done (offline items need real Chrome) | — | main | check_all 8/8; 12 defects in QA.md; zoom-limits.md written |
 
 ## Gates
 - **A.** DEM source and data downloads: **APPROVED by the user 2026-11-23**. Covers:
@@ -110,4 +110,15 @@ FILES: web/js/store.js, web/js/editor.js, web/js/conflict-dialog.js, web/js/gpx.
 ACCEPTANCE: browser pane 5/5 pass: drawn line + note persist after reload; bad import rejected, no slot; valid import -> "import" slot, restore OK; conflict dialog (dirty base_rev 1 vs published 2) lists both sides, 3 actions work; GPX 4 named tracks. Also vertex drag/insert/delete, zone i drag, area draw, add/delete route, undo/redo, publish (content_rev+1), reset, mobile layout
 DECISIONS: non-dirty local always takes published; dirty==published treated clean; local record adds `base`; load() never blocks boot (store.conflictPending()); load({published}) test hook; recoverySlots() async; restore() does not snapshot; hit-test via map.project(); publish export leaves local state unchanged; menus 'edit' (toggle) and 'data' (exports/import/GPX/reset/Restore:<slot>)
 ISSUES: map.js initMap can hang on style.load when the pane is not rendering (suggest timeout, WS3); no app.js/ui.js changes needed; browser pane SW registration error (WS7, known); preview "web" port confusion (8765 serving tiles/)
+```
+
+### WS9 QA (pilot)
+```
+CARD: WS9 QA | SCOPE: pilot | STATUS: done (offline items NOT RUN, need real Chrome)
+BRANCH: shared checkout (main), nothing committed
+FILES: tools/check_all.py, docs/build/QA.md, docs/decisions/zoom-limits.md
+ACCEPTANCE: check_all.py -> 8/8 pass; pane desktop+mobile: layers/legends, ATES, readout source, aspect JC N 343-347, Tanal WSW 242, editor/import/conflict/recovery/publish/GPX pass; quality mask 0 missing
+MEASUREMENTS: tiles MB z10..16 .02/.05/.17/.53/1.74/5.89/2.61; pack z15 10.5 MB, current 13.1, z16 DEM ~30; profile 3.1 km 66 ms cold/3 ms warm; frame 20.7 ms desktop / 11.9 ms mobile preset (PC GPU)
+DECISIONS: recommend DEM/analysis z15, drop z16 overlays, maxZoom 17, minZoom ~11, maxBounds = tile bounds + margin
+ISSUES: 12 defects in QA.md (WS3 x6 incl. medium no maxBounds; WS7 x2; WS1 x1; WS8 x1); badge stuck at 0% in pane; need make_asset_manifest before Chrome run
 ```
