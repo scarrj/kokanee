@@ -19,7 +19,7 @@ The orchestrator maintains this log. Agent reports are appended unchanged (forma
 - **A.** DEM source and data downloads: **APPROVED by the user 2026-11-23**. Covers:
   - the recommendation in `docs/decisions/dem-source.md` (HRDEM 2017 window, MRDEM window)
   - the BC Freshwater Atlas lakes/streams/glaciers download.
-- **B.** Pilot review (PC + phone): not yet.
+- **B.** Pilot review (PC + phone): **ready for the user** (fix loop closed 2026-11-23; check_all 8/8).
 - **C.** First push to `main` / Pages deploy, and the git identity: not yet.
 
 ## Open items for the user
@@ -121,4 +121,12 @@ ACCEPTANCE: check_all.py -> 8/8 pass; pane desktop+mobile: layers/legends, ATES,
 MEASUREMENTS: tiles MB z10..16 .02/.05/.17/.53/1.74/5.89/2.61; pack z15 10.5 MB, current 13.1, z16 DEM ~30; profile 3.1 km 66 ms cold/3 ms warm; frame 20.7 ms desktop / 11.9 ms mobile preset (PC GPU)
 DECISIONS: recommend DEM/analysis z15, drop z16 overlays, maxZoom 17, minZoom ~11, maxBounds = tile bounds + margin
 ISSUES: 12 defects in QA.md (WS3 x6 incl. medium no maxBounds; WS7 x2; WS1 x1; WS8 x1); badge stuck at 0% in pane; need make_asset_manifest before Chrome run
+```
+
+### Fix loop (pilot), orchestrator 2026-11-23
+```
+QA defects 1-10 fixed and committed: WS1 residual map (patchy, no trend); WS3 x6 (camera limits + kdem edge-extended DEM + outside-mask, mobile badge/scale, per-line coverage, No data legend, style wait, glyph); WS7 Retry 44px + SW-never-installs fallback; WS8 r34 skin re-routed (max 71 -> 38 deg; new stretch on MRDEM only, flagged in notes)
+Found by orchestrator in pane, fixed (WS7): verify() percent-encoding mismatch (fonts with spaces never "ready"); SW overwrote per-version manifest; new deploys never re-precached -> sw.js?v=<manifest version>. WS3: offline starts before map; style wait no longer resolves early
+Offline acceptance (pane, SW now registers): clean -> Offline ready; new version -> new cache, old deleted; one tile deleted -> 1 missing -> Retry -> ready; empty cache -> Retry rebuilds; server stopped -> reload renders terrain/routes/badge, z12-16.5 pans with 0 errors
+Still open: phone measurements (user); zoom-limit decision (drop z16 overlays?); closure extent; return Kokanee Lake -> cabin not drawn
 ```
