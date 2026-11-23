@@ -3,7 +3,16 @@ const listeners = { status: [] };
 let ui = null, badge = null, last = null, running = null;
 
 export function on(evt, cb) { (listeners[evt] ||= []).push(cb); }
-const emit = (s) => { last = s; render(s); (listeners.status || []).forEach((cb) => { try { cb(s); } catch (e) { console.error(e); } }); };
+let watchdog = null;
+const armWatchdog = () => {
+  clearTimeout(watchdog);
+  watchdog = setTimeout(() => {
+    if (last?.state === 'ready') return;
+    console.warn('Service worker did not finish installing within 20 s; falling back to verify()');
+    run({ full: true });
+  }, 20000);
+};
+const emit = (s) => { if (s.state !== 'downloading') clearTimeout(watchdog); last = s; render(s); (listeners.status || []).forEach((cb) => { try { cb(s); } catch (e) { console.error(e); } }); };
 
 const mb = (n) => (n / 1048576).toFixed(n > 1e8 ? 0 : 1) + ' MB';
 
@@ -103,7 +112,7 @@ function render(s) {
   if (s.state === 'missing') {
     const b = document.createElement('button');
     b.textContent = 'Retry';
-    b.style.cssText = 'margin-left:8px;min-height:28px;border:1px solid #fff;background:transparent;color:inherit;border-radius:6px;cursor:pointer';
+    b.style.cssText = 'margin:-10px -6px -10px 8px;min-height:44px;min-width:44px;padding:0 10px;vertical-align:middle;border:1px solid #fff;background:transparent;color:inherit;border-radius:6px;cursor:pointer';
     b.onclick = retry;
     badge.append(b);
   }
@@ -148,7 +157,7 @@ export async function initOffline(uiApi) {
   if (!('serviceWorker' in navigator)) { emit({ state: 'missing', missing: ['(service worker unsupported)'], persisted: false }); return; }
   navigator.serviceWorker.addEventListener('message', (ev) => {
     const d = ev.data || {};
-    if (d.type === 'precache-progress') emit({ state: 'downloading', pct: Math.round((d.done / Math.max(1, d.total)) * 100), missing: [] });
+    if (d.type === 'precache-progress') armWatchdog(), emit({ state: 'downloading', pct: Math.round((d.done / Math.max(1, d.total)) * 100), missing: [] });
     else if (d.type === 'precache-done') run({ full: true });
   });
   navigator.serviceWorker.addEventListener('controllerchange', () => run({ full: true }));
@@ -157,10 +166,10 @@ export async function initOffline(uiApi) {
     const reg = await navigator.serviceWorker.register('sw.js', { scope: './' });
     reg.addEventListener('updatefound', () => emit({ state: 'downloading', pct: 0, missing: [] }));
     if (!reg.installing && !reg.waiting) await run({ full: true });
-    else emit({ state: 'downloading', pct: 0, missing: [] });
+    else { emit({ state: 'downloading', pct: 0, missing: [] }); armWatchdog(); }
     reg.update().catch(() => {});
   } catch (e) {
     console.error('SW register failed', e);
-    emit({ state: 'missing', missing: ['(service worker failed)'], persisted: false });
+    run({ full: true });  // fall back to verifying whatever is cached; shows N missing + Retry
   }
 }
