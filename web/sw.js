@@ -93,7 +93,8 @@ self.addEventListener('fetch', (e) => {
     e.respondWith((async () => {
       try {
         const r = await fetch(req, { cache: 'no-store' });
-        if (r.ok) {
+        // asset-manifest.json is never written to a cache: each version's cache keeps its own manifest.
+        if (r.ok && path !== 'asset-manifest.json') {
           const n = await current();
           if (n) (await caches.open(n)).put(path, r.clone());
         }

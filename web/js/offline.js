@@ -42,8 +42,8 @@ export async function verify({ full = true } = {}) {
     const cache = await findCache();
     if (!cache) { result.problems.push('no complete cache'); result.missing = ['(nothing cached yet)']; return result; }
     const m = (result.manifest = await loadManifest(cache));
-    const base = new URL('.', document.baseURI).pathname;
-    const keys = (await cache.keys()).map((r) => new URL(r.url).pathname);
+    const base = decodeURIComponent(new URL('.', document.baseURI).pathname);
+    const keys = (await cache.keys()).map((r) => decodeURIComponent(new URL(r.url).pathname));
     const have = new Set(keys);
     for (const f of m.files) if (!have.has(base + f.path)) result.missing.push(f.path);
     if (full) {
@@ -123,8 +123,21 @@ export async function retry() {
   emit({ state: 'downloading', pct: 0, missing: [] });
   try {
     const v = await verify({ full: true });
-    const cache = await findCache();
-    if (cache && v.manifest) {
+    let cache = await findCache();
+    if (!cache) {
+      // No complete cache (e.g. SW active but its install was wiped): rebuild one from the page.
+      const m = await loadManifest(null);
+      cache = await caches.open('kokanee-' + m.version);
+      v.manifest = m;
+      v.missing = m.files.map((f) => f.path);
+      let n = 0;
+      for (const f of m.files) {
+        try { const r = await fetch(f.path, { cache: 'reload' }); if (r.ok) await cache.put(f.path, r); } catch { /* offline */ }
+        if (++n % 20 === 0) emit({ state: 'downloading', pct: Math.round((n / m.files.length) * 100), missing: [] });
+      }
+      await cache.put('asset-manifest.json', new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
+      await cache.put('__complete', new Response(String(Date.now())));
+    } else if (v.manifest) {
       const all = new Set(v.missing.filter((p) => !p.startsWith('decode:') && !p.startsWith('(')));
       if (v.missing.some((p) => p.startsWith('decode:'))) v.manifest.files.filter((f) => /^tiles\/.+\.png$/.test(f.path)).forEach((f) => all.add(f.path));
       let n = 0;
@@ -163,7 +176,12 @@ export async function initOffline(uiApi) {
   navigator.serviceWorker.addEventListener('controllerchange', () => run({ full: true }));
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') run({ full: last?.state !== 'ready' }); });
   try {
-    const reg = await navigator.serviceWorker.register('sw.js', { scope: './' });
+    // Register sw.js?v=<manifest version> so a new deploy changes the script URL and re-installs
+    // into a new cache. Offline, fall back to the cached manifest's version (matches the active SW).
+    let ver = '';
+    try { ver = (await (await fetch('asset-manifest.json', { cache: 'no-store' })).json()).version; }
+    catch { try { ver = (await loadManifest(await findCache())).version; } catch { /* first run offline */ } }
+    const reg = await navigator.serviceWorker.register('sw.js' + (ver ? '?v=' + ver : ''), { scope: './' });
     reg.addEventListener('updatefound', () => emit({ state: 'downloading', pct: 0, missing: [] }));
     if (!reg.installing && !reg.waiting) await run({ full: true });
     else { emit({ state: 'downloading', pct: 0, missing: [] }); armWatchdog(); }
