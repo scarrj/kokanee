@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kokanee 3D Topo</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b3c5d">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kokanee Topo">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="vendor/maplibre-gl.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="bar">
+  <strong class="title">Kokanee Topo</strong>
+  <span class="spacer"></span>
+  <button id="btn-home" class="tbtn" title="Home view" aria-label="Home view">Home</button>
+  <button id="btn-layers" class="tbtn" aria-expanded="false" aria-controls="layers">Layers</button>
+  <button id="btn-menu" class="tbtn" aria-expanded="false" aria-controls="menu" aria-label="Menu">Menu</button>
+</header>
+<div id="map"></div>
+<div id="banner" hidden></div>
+<aside id="layers" hidden aria-label="Layers"></aside>
+<div id="menu" hidden role="menu"></div>
+<aside id="panel" hidden aria-label="Details" data-state="peek">
+  <div id="panel-handle" role="button" tabindex="0" aria-label="Expand or collapse"><span></span></div>
+  <div class="panel-head"><h2 id="panel-title"></h2><button id="panel-close" class="tbtn" aria-label="Close">&times;</button></div>
+  <div id="panel-body"></div>
+</aside>
+<div id="readout" hidden></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script src="vendor/maplibre-gl.js"></script>
+<script src="vendor/maplibre-contour.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
