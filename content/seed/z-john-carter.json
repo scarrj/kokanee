@@ -3,7 +3,10 @@
     "id": "z-john-carter",
     "name": "Mount John Carter Area",
     "color": "#2b8a3e",
-    "info_point": null,
+    "info_point": [
+      -117.197127,
+      49.748623
+    ],
     "description": "Mount John Carter is named for John Carter who worked at Kokanee Glacier Park as a hut custodian and park ranger for many, many years. He also wrote a guide book about the park and died tragically in an avalanche in 1996. Mount John Carter is 2,606 metres high and is connected to Outlook Mountain via a short ridge line.",
     "source": "backcountryskiingcanada.com (via guide PDF)"
   },
@@ -135,13 +138,119 @@
       "name": "Cat Fish Comes Home",
       "time": "2 - 3.5 hrs",
       "gain_m": 320,
-      "descent_m": null,
+      "descent_m": 260,
       "description": "This route is very close to the cabin and lightly treed with many variations to ski. Be sure to lay down good lines as they will be on full display from those at Kokanee Glacier Cabin. Head to the South end of Kaslo Lake from Kokanee Glacier Cabin and start climbing the treed rib between Commission Creek and Outlook Creek. The top is called Riddles Knob and stands at 2160 metres. The ski down is through sparse trees and rolling terrain with a few benches thrown in to keep you alert. After 260 metres you will be back at the shores of Kaslo Lake with the Cabin in sight.",
-      "notes": "",
+      "notes": "Placement: Riddles Knob taken as the 2160 m point (DEM 2158-2161 m) on the NNE rib that ends at the Commission/Outlook creek confluence S of Kaslo Lake; skin follows the E shore of Kaslo Lake to its S end, then the rib crest. Descent runs N down the rib's NW flank to the S shore of Kaslo Lake (~200 m on the DEM vs the 260 m stated; descent_m set from \"After 260 metres\"). Area is MRDEM-30 only, so benches and the knob itself are smoothed.",
       "approx": true,
-      "confidence": "low",
-      "descent": [],
-      "skin": []
+      "confidence": "medium",
+      "descent": [
+        [
+          -117.194946,
+          49.758521
+        ],
+        [
+          -117.195364,
+          49.75906
+        ],
+        [
+          -117.195922,
+          49.759688
+        ],
+        [
+          -117.196342,
+          49.760407
+        ],
+        [
+          -117.196484,
+          49.761216
+        ],
+        [
+          -117.196348,
+          49.762026
+        ],
+        [
+          -117.196213,
+          49.762836
+        ],
+        [
+          -117.196077,
+          49.763645
+        ],
+        [
+          -117.195803,
+          49.764455
+        ],
+        [
+          -117.195389,
+          49.765266
+        ],
+        [
+          -117.194976,
+          49.765986
+        ]
+      ],
+      "skin": [
+        [
+          -117.19486,
+          49.771698
+        ],
+        [
+          -117.193885,
+          49.771115
+        ],
+        [
+          -117.19277,
+          49.770037
+        ],
+        [
+          -117.19193,
+          49.768419
+        ],
+        [
+          -117.191786,
+          49.767071
+        ],
+        [
+          -117.19192,
+          49.765721
+        ],
+        [
+          -117.191637,
+          49.764372
+        ],
+        [
+          -117.191771,
+          49.763203
+        ],
+        [
+          -117.192323,
+          49.762393
+        ],
+        [
+          -117.192876,
+          49.761672
+        ],
+        [
+          -117.193359,
+          49.760952
+        ],
+        [
+          -117.193842,
+          49.760231
+        ],
+        [
+          -117.194325,
+          49.759511
+        ],
+        [
+          -117.19467,
+          49.758971
+        ],
+        [
+          -117.194946,
+          49.758521
+        ]
+      ]
     },
     {
       "id": "r27",
