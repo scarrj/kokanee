@@ -10,7 +10,7 @@ The orchestrator maintains this log. Agent reports are appended unchanged (forma
 | WS3 viewer | partial | — | main | viewer works on pilot tiles (mobile verified); readout/profile await WS4; scale bar + desktop panel unverified |
 | WS4 metrics | done | — | main | parity 3/3 exact; 3.5 km profile 51 ms cold / 5 ms warm |
 | WS5 text | done | — | main | 41 routes seeded; pilot routes.json (r26, r34) validates in Py + JS |
-| WS6 store+editor | running | — | | |
+| WS6 store+editor | done | — | main | 5/5 acceptance in browser pane; conflict dialog, recovery slots, GPX, publish rev bump; mobile 44px handles |
 | WS7 pwa | partial | — | main | SW/offline built; browser pane blocks SW registration, so offline acceptance must run in real Chrome; index.html tags forwarded to WS3 |
 | WS8 geometry | done | — | main | r26 OK (-25% vs guide, MRDEM 100%); r34 OK via Keyhole notch (low confidence); closure is a TEST polygon; r34 skin steep step open |
 | WS9 QA | blocked | — | | |
@@ -100,4 +100,14 @@ FILES: content/seed/z-longer-tours.json (r34), content/seed/z-john-carter.json (
 ACCEPTANCE: check_routes.py --seeds -> pass. r34 2713->1965 m, 748 m vs 800 (-7%), max 47 deg, 0.2% >45, longest >45 5 m; r26 max 35 deg. Orchestrator: assemble --pilot --only r26,r34 + validate (Py+JS) PASS; metrics --routes written
 DECISIONS: r34 descent found by least-slope path search, crosses the Keyhole notch floor ~489,040/5,510,720 (~70 m SE of the ATES point), then SW/W bowl to Kokanee Lake SE shore; skin ends at 489,130/5,510,800. check_routes flags (not fails) any >=20 m stretch over 45 deg
 ISSUES: r34 skin has a short steep step ~487,900/5,511,650 (lidar max 71 deg, 0.5% >45); return Kokanee Lake -> cabin only in notes, not drawn
+```
+
+### WS6 store+editor (pilot)
+```
+CARD: WS6 store-editor | SCOPE: pilot | STATUS: done
+BRANCH: n/a (shared checkout, not committed)
+FILES: web/js/store.js, web/js/editor.js, web/js/conflict-dialog.js, web/js/gpx.js
+ACCEPTANCE: browser pane 5/5 pass: drawn line + note persist after reload; bad import rejected, no slot; valid import -> "import" slot, restore OK; conflict dialog (dirty base_rev 1 vs published 2) lists both sides, 3 actions work; GPX 4 named tracks. Also vertex drag/insert/delete, zone i drag, area draw, add/delete route, undo/redo, publish (content_rev+1), reset, mobile layout
+DECISIONS: non-dirty local always takes published; dirty==published treated clean; local record adds `base`; load() never blocks boot (store.conflictPending()); load({published}) test hook; recoverySlots() async; restore() does not snapshot; hit-test via map.project(); publish export leaves local state unchanged; menus 'edit' (toggle) and 'data' (exports/import/GPX/reset/Restore:<slot>)
+ISSUES: map.js initMap can hang on style.load when the pane is not rendering (suggest timeout, WS3); no app.js/ui.js changes needed; browser pane SW registration error (WS7, known); preview "web" port confusion (8765 serving tiles/)
 ```
