@@ -100,7 +100,7 @@ Empty lines (fewer than 2 points) are skipped.
   "sources": [{"code":1,"name":"LidarBC 2018","native_res_m":1,"vertical":"CGVD28 (probable)"}, …] }
 ```
 
-- **DEM (Terrarium):** `elev = R*256 + G + B/256 − 32768`. A missing cell is written as **R=G=B=0** (elevation −32768 is treated as no-data).
+- **DEM (Terrarium):** `elev = R*256 + G + B/256 − 32768`. Missing cells (quality code 0) are **filled with the nearest valid elevation** (distance-transform fill), so the 3D mesh never spikes. Whether a cell is missing comes only from the `quality` tile (code 0). Metrics exclude those samples, and the overlays hatch them.
 - **Quality codes** (also the `quality` tile colours):
 
 | Code | Meaning | Colour | Alpha |
@@ -111,7 +111,13 @@ Empty lines (fewer than 2 points) are skipped.
 | 3 | MRDEM-30 fallback | `#e8590c` | 120 |
 | 4 | blend zone | `#f08c00` | 140 |
 
-  The quality tile also encodes the code itself in its **B channel** (exact value 0–4), so the app can read it back.
+  The `quality` tile is **display only**: its colours are semi-transparent, and canvas decoding premultiplies alpha, so its channels cannot be read back reliably.
+- **Quality code tiles (`qcode/`)**, for analysis:
+  - opaque 8-bit greyscale PNG at `analysis_zoom` only
+  - pixel value = quality code 0–4, exactly
+  - the sampler reads the code from these tiles.
+  - `tiles.json.layers.qcode = {minzoom: A, maxzoom: A, encoding: "gray-code"}`.
+- **Slope/aspect grid.** Slope and aspect use Horn's method on the Web-Mercator pixel grid of the zoom concerned, with cell size = `40075016.686 / (256·2^z) · cos(lat of the row)` metres. Aspect is the direction the slope faces, in degrees clockwise from N. The sampler (WS4) must use the same cell size at `analysis_zoom`.
 - **Slope angle bands:** Horn's 3×3 slope on the analysis grid.
   - Classes: <27 transparent, 27–30, 30–35, 35–40, 40–45, ≥45°.
   - Use the standard avalanche palette: yellow `#ffe066` → orange `#ff922b` → red `#f03e3e` → purple `#ae3ec9` → black/grey `#343a40`.
@@ -131,6 +137,7 @@ These are the fixed MapLibre ids. Sources and layers share names where it's 1:1.
 | ATES | `ates-zones`, `ates-paths`, `ates-decision`, `ates-boundary`, `ates-road` |
 | Content | `areas-fill`, `areas-line`, `routes-skin`, `routes-descent`, `route-highlight`, `routes-label`, `zone-info`, `pois` |
 | Editor (WS6 only) | `edit-vertices`, `edit-midpoints`, `edit-line` |
+| Auxiliary (added by WS3) | `routes-descent-casing`, `route-highlight-skin`, `zone-info-label`, `pois-label`, `elev-ref-2100-label` |
 
 The terrain source is `dem` (raster-dem, encoding `terrarium`).
 
