@@ -1,0 +1,244 @@
+{
+  "pois": [
+    {
+      "id": "cabin",
+      "name": "Kokanee Glacier Cabin",
+      "type": "hut",
+      "coord": [
+        -117.194844,
+        49.771692
+      ],
+      "description": ""
+    },
+    {
+      "id": "cond-peak",
+      "name": "Cond Peak",
+      "type": "peak",
+      "coord": [
+        -117.142461,
+        49.746727
+      ],
+      "description": ""
+    },
+    {
+      "id": "esmeralda-peak",
+      "name": "Esmeralda Peak",
+      "type": "peak",
+      "coord": [
+        -117.150967,
+        49.747735
+      ],
+      "description": ""
+    },
+    {
+      "id": "keyhole",
+      "name": "Keyhole",
+      "type": "pass",
+      "coord": [
+        -117.152373,
+        49.749477
+      ],
+      "description": ""
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "type": "pass",
+      "coord": [
+        -117.20247,
+        49.779707
+      ],
+      "description": ""
+    },
+    {
+      "id": "enterprise-ridge",
+      "name": "Enterprise Ridge",
+      "type": "peak",
+      "coord": [
+        -117.197778,
+        49.78066
+      ],
+      "description": ""
+    },
+    {
+      "id": "happy-valley",
+      "name": "Happy Valley",
+      "type": "landmark",
+      "coord": [
+        -117.191463,
+        49.779946
+      ],
+      "description": ""
+    },
+    {
+      "id": "sunnyside",
+      "name": "Sunnyside",
+      "type": "landmark",
+      "coord": [
+        -117.192508,
+        49.774907
+      ],
+      "description": ""
+    },
+    {
+      "id": "grizzly-bowl",
+      "name": "Grizzly Bowl",
+      "type": "landmark",
+      "coord": [
+        -117.16653,
+        49.766951
+      ],
+      "description": ""
+    },
+    {
+      "id": "the-apron",
+      "name": "The Apron",
+      "type": "landmark",
+      "coord": [
+        -117.169686,
+        49.771616
+      ],
+      "description": ""
+    },
+    {
+      "id": "giants-kneecap",
+      "name": "Giants Kneecap",
+      "type": "landmark",
+      "coord": [
+        -117.155455,
+        49.755305
+      ],
+      "description": ""
+    },
+    {
+      "id": "joker-basin",
+      "name": "Joker Basin",
+      "type": "landmark",
+      "coord": [
+        -117.148725,
+        49.768465
+      ],
+      "description": ""
+    },
+    {
+      "id": "the-battleship",
+      "name": "The Battleship",
+      "type": "landmark",
+      "coord": [
+        -117.163755,
+        49.758329
+      ],
+      "description": ""
+    },
+    {
+      "id": "sunny-smugglers",
+      "name": "Sunny Smugglers",
+      "type": "landmark",
+      "coord": [
+        -117.181735,
+        49.761357
+      ],
+      "description": ""
+    },
+    {
+      "id": "smugglers",
+      "name": "Smugglers",
+      "type": "landmark",
+      "coord": [
+        -117.180442,
+        49.765987
+      ],
+      "description": ""
+    },
+    {
+      "id": "smugglers-ridge",
+      "name": "Smugglers Ridge",
+      "type": "peak",
+      "coord": [
+        -117.177439,
+        49.762665
+      ],
+      "description": ""
+    },
+    {
+      "id": "griffin-creek",
+      "name": "Griffin Creek",
+      "type": "landmark",
+      "coord": [
+        -117.205327,
+        49.766789
+      ],
+      "description": ""
+    },
+    {
+      "id": "mount-giegerich",
+      "name": "Mount Giegerich",
+      "type": "peak",
+      "coord": [
+        -117.220268,
+        49.755746
+      ],
+      "description": ""
+    },
+    {
+      "id": "saphire-lakes",
+      "name": "Saphire Lakes",
+      "type": "lake",
+      "coord": [
+        -117.207811,
+        49.751693
+      ],
+      "description": ""
+    },
+    {
+      "id": "glory-basin",
+      "name": "Glory Basin",
+      "type": "landmark",
+      "coord": [
+        -117.19985,
+        49.73676
+      ],
+      "description": ""
+    },
+    {
+      "id": "mount-john-carter",
+      "name": "Mount John Carter",
+      "type": "peak",
+      "coord": [
+        -117.19196,
+        49.740111
+      ],
+      "description": ""
+    },
+    {
+      "id": "outlook-mountain",
+      "name": "Outlook Mountain",
+      "type": "peak",
+      "coord": [
+        -117.195812,
+        49.731264
+      ],
+      "description": ""
+    },
+    {
+      "id": "repeater-tower",
+      "name": "Repeater Tower",
+      "type": "landmark",
+      "coord": [
+        -117.156938,
+        49.752723
+      ],
+      "description": ""
+    },
+    {
+      "id": "mount-kitchener",
+      "name": "Mount Kitchener",
+      "type": "peak",
+      "coord": [
+        -117.165248,
+        49.754638
+      ],
+      "description": ""
+    }
+  ]
+}
