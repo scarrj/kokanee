@@ -31,9 +31,10 @@ Residual statistics (lidar vs MRDEM at 30 m, stable ground) are in `vertical-dat
 |---|---|---|---|---|---|---|---|---|
 | dem | 0.01 MB (1) | 0.03 MB (1) | 0.11 MB (4) | 0.38 MB (9) | 1.37 MB (25) | 4.86 MB (72) | - | 6.75 MB |
 | quality | 0.00 MB (1) | 0.00 MB (1) | 0.01 MB (4) | 0.01 MB (9) | 0.03 MB (25) | 0.07 MB (72) | 0.19 MB (224) | 0.31 MB |
+| qcode | - | - | - | - | - | 0.03 MB (72) | - | 0.03 MB |
 | slope | 0.00 MB (1) | 0.01 MB (1) | 0.02 MB (4) | 0.06 MB (9) | 0.15 MB (25) | 0.45 MB (72) | 1.22 MB (224) | 1.92 MB |
 | aspect | 0.00 MB (1) | 0.01 MB (1) | 0.02 MB (4) | 0.05 MB (9) | 0.14 MB (25) | 0.36 MB (72) | 0.93 MB (224) | 1.51 MB |
 | elev | 0.00 MB (1) | 0.01 MB (1) | 0.01 MB (4) | 0.02 MB (9) | 0.05 MB (25) | 0.12 MB (72) | 0.27 MB (224) | 0.48 MB |
 
-Total 10.97 MB. Written by `tools/make_tiles.py`.
+Total 11.00 MB. Written by `tools/make_tiles.py`.
 <!-- /tile-sizes -->

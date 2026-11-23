@@ -15,8 +15,12 @@
   "quality": {
    "minzoom": 10,
    "maxzoom": 16,
-   "encoding": "rgba",
-   "code_channel": "B"
+   "encoding": "rgba"
+  },
+  "qcode": {
+   "minzoom": 15,
+   "maxzoom": 15,
+   "encoding": "gray-code"
   },
   "slope": {
    "minzoom": 10,

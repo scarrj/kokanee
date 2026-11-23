@@ -129,12 +129,11 @@ def classify_overlay(layer, z, slope, aspect, qual, ecols):
             m = qual == code
             rgba[m, :3] = hex_rgb(c)
             rgba[m, 3] = a
-        rgba[..., 2] = qual  # exact code 0-4 in B (the contract's read-back channel)
         miss = qual == 0
     hm = hatch_mask(h, w)
     if layer == "quality":
         rgba[miss & ~hm, 3] = 0
-        rgba[miss, 0], rgba[miss, 1] = HATCH_RGB[0], HATCH_RGB[1]
+        rgba[miss, :3] = HATCH_RGB
     else:
         rgba[miss] = 0
         sel = miss & hm
@@ -169,7 +168,7 @@ def main():
     wgs = transform_bounds(tc.CRS, "EPSG:4326", *bounds, densify_pts=21)
     ecols = elev_colors()
 
-    for layer in ("dem", "quality", "slope", "aspect", "elev"):
+    for layer in ("dem", "quality", "qcode", "slope", "aspect", "elev"):
         shutil.rmtree(out_root / layer, ignore_errors=True)
 
     sizes = {}  # layer -> zoom -> [bytes, tiles]
@@ -208,6 +207,9 @@ def main():
                 if z in zooms["dem"]:
                     n = save_png(terrarium(zfill[sl]), out_root / "dem" / str(z) / str(tx) / f"{ty}.png")
                     s_ = sizes.setdefault("dem", {}).setdefault(z, [0, 0]); s_[0] += n; s_[1] += 1
+                if z == ANALYSIS_ZOOM:  # opaque 8-bit greyscale, pixel value = quality code 0-4 (exact)
+                    n = save_png(qm3[sl], out_root / "qcode" / str(z) / str(tx) / f"{ty}.png")
+                    s_ = sizes.setdefault("qcode", {}).setdefault(z, [0, 0]); s_[0] += n; s_[1] += 1
                 if do_overlay:
                     for layer in ("quality", "slope", "aspect", "elev"):
                         rgba = classify_overlay(layer, zt, slope[sl], aspect[sl], qm3[sl], ecols)
@@ -231,7 +233,8 @@ def main():
         "bounds": [round(v, 6) for v in wgs],
         "layers": {
             "dem": {"minzoom": min(dz), "maxzoom": max(dz), "encoding": "terrarium"},
-            "quality": {"minzoom": min(oz), "maxzoom": max(oz), "encoding": "rgba", "code_channel": "B"},
+            "quality": {"minzoom": min(oz), "maxzoom": max(oz), "encoding": "rgba"},
+            "qcode": {"minzoom": ANALYSIS_ZOOM, "maxzoom": ANALYSIS_ZOOM, "encoding": "gray-code"},
             "slope": {"minzoom": min(oz), "maxzoom": max(oz), "encoding": "rgba"},
             "aspect": {"minzoom": min(oz), "maxzoom": max(oz), "encoding": "rgba"},
             "elev": {"minzoom": min(oz), "maxzoom": max(oz), "encoding": "rgba"},
@@ -257,7 +260,7 @@ def main():
     (bd / "tile_sizes.json").write_text(json.dumps(table, indent=1))
     zs_all = sorted({int(z) for l in table.values() for z in l})
     lines = ["| Layer | " + " | ".join(f"z{z}" for z in zs_all) + " | total |", "|---|" + "---|" * (len(zs_all) + 1)]
-    for l in ("dem", "quality", "slope", "aspect", "elev"):
+    for l in ("dem", "quality", "qcode", "slope", "aspect", "elev"):
         cells = []
         for z in zs_all:
             e = table.get(l, {}).get(str(z))
