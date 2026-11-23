@@ -39,3 +39,6 @@ Findings:
 - The scatter is MRDEM's 30 m representation error (smoothing, canopy and Copernicus-derived blocks), not a datum shift. A constant or plane fitted on the lidar side would be extrapolated 5+ km into the park core where it cannot be checked, and would worsen the SW sub-block (-0.5 m).
 
 **Decision (pilot): no vertical correction** (none, constant or planar) for MRDEM or either lidar product. The lidar to MRDEM step (median ~0.5 m, local spread to a few metres) is absorbed by the 150 m feather (`seam-report.md`). To be re-checked on the full bbox, where the HRDEM 2017 window extends further (west and south) and more stable ground is available.
+
+**Residual map** (`tools/build_terrain.py --scope pilot --residual-png`): ![Lidar minus MRDEM residuals on stable ground, +/-5 m](residuals.png)
+The map shows lidar minus MRDEM at 30 m on stable ground only (1427 blocks, median +0.38 m, MAD 1.5 m; the cabin and Kaslo Lake lie outside the lidar overlap, John Carter at its SW corner). Residuals are patchy and local (red clusters of +2 to +5 m on a few ridges and valley-side blocks, blue streaks along gully lines) with no regional gradient, tilt or edge-to-edge trend, which supports the "no correction" decision above: the scatter is MRDEM terrain smoothing, not a datum or planar offset.

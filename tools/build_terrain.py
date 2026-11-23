@@ -302,6 +302,56 @@ def residual_png(resid, stable, stats, path, scale=3, vmax=10.0):
     sheet.save(path)
 
 
+def residual_map_png(l18, l17, mrd, resid, bounds, path, vmax=5.0, scale=4):
+    """Single-panel lidar - MRDEM residual (stable ground, 30 m) with colourbar, overlap outline and landmarks."""
+    from pyproj import Transformer
+    d, m = resid["lidar2018_minus_mrdem"]
+    d17, m17 = resid["lidar2017_minus_mrdem"]
+    d = np.where(np.isfinite(d), d, d17)
+    m = m | m17
+    k = 15
+    lid = np.where(np.isfinite(l18), l18, l17)
+    has = tc.block_mean(lid, k)
+    over = np.isfinite(has) & np.isfinite(tc.block_mean(mrd, k))
+    e0, n0, e1, n1 = bounds
+    bh, bw = d.shape
+    img = np.full((bh, bw, 3), 255, dtype="uint8")
+    img[over & ~m] = (205, 205, 205)
+    img[m] = diverging(d[m], vmax)
+    im = Image.fromarray(img).resize((bw * scale, bh * scale), Image.NEAREST)
+    edge = over & ~ndi.binary_erosion(over, border_value=1)
+    ed = np.array(Image.fromarray((edge * 255).astype("uint8")).resize((bw * scale, bh * scale), Image.NEAREST)) > 0
+    ed = ndi.binary_dilation(ed)
+    a = np.array(im)
+    a[ed] = (0, 0, 0)
+    im = Image.fromarray(a)
+    dr = ImageDraw.Draw(im)
+    tf = Transformer.from_crs("EPSG:4326", tc.CRS, always_xy=True)
+    for name, lon, lat in [("Cabin", -117.194844, 49.771692), ("Kaslo Lake", -117.195278, 49.768333),
+                           ("John Carter", -117.19196, 49.740111)]:
+        E, N = tf.transform(lon, lat)
+        x, y = (E - e0) / (k * tc.RES) * scale, (n1 - N) / (k * tc.RES) * scale
+        dr.ellipse((x - 4, y - 4, x + 4, y + 4), outline="black", fill="yellow")
+        dr.text((x + 7, y - 5 + (10 if name == "Kaslo Lake" else 0)), name, fill="black")
+    W, H = im.width + 30, im.height + 110
+    sheet = Image.new("RGB", (W, H), "white")
+    sd = ImageDraw.Draw(sheet)
+    x = m.sum()
+    sd.text((15, 6), "Lidar minus MRDEM-30, 30 m blocks, stable ground (slope<20 deg, no glacier, no lake)", fill="black")
+    sd.text((15, 22), f"{int(x)} blocks, median {np.median(d[m]):+.2f} m, MAD {mad(d[m]):.2f} m; N up", fill="black")
+    sheet.paste(im, (15, 40))
+    y0 = im.height + 52
+    for i in range(300):
+        v = (i / 299 * 2 - 1) * vmax
+        sheet.paste(Image.fromarray(diverging(np.array([[v]]), vmax)).resize((2, 12)), (15 + i * 2, y0))
+    for v in (-vmax, -vmax / 2, 0, vmax / 2, vmax):
+        xx = 15 + int((v / vmax + 1) / 2 * 598)
+        sd.line((xx, y0 + 12, xx, y0 + 16), fill="black")
+        sd.text((xx - 10, y0 + 18), f"{v:+g} m" if v else "0", fill="black")
+    sd.text((15, y0 + 36), "blue = lidar below MRDEM, red = above; grey = overlap but not stable; white = no lidar; black line = lidar/MRDEM overlap edge", fill="black")
+    sheet.convert("P", palette=Image.ADAPTIVE, colors=128).save(path, optimize=True)
+
+
 # ---------------------------------------------------------------- merge + seam QA
 def merge(l18, l17, mrd, feather_m):
     valid = np.isfinite(l18) | np.isfinite(l17)
@@ -414,6 +464,8 @@ def main():
     ap.add_argument("--scope", choices=list(tc.SCOPES), default="pilot")
     ap.add_argument("--stats-only", action="store_true", help="stop after the overlap/residual check (no correction applied)")
     ap.add_argument("--refetch", action="store_true")
+    ap.add_argument("--residual-png", nargs="?", const="", default=None, metavar="PATH",
+                    help="only write the +/-5 m lidar-MRDEM residual map (default docs/decisions/residuals.png) and exit")
     ap.add_argument("--no-correction", action="store_true")
     a = ap.parse_args()
     scope = a.scope
@@ -422,6 +474,11 @@ def main():
     print(f"grid {w} x {h} @ {tc.RES} m; coverage lidar2018 {np.isfinite(l18).mean():.1%}, hrdem2017 {np.isfinite(l17).mean():.1%}, mrdem {np.isfinite(mrd).mean():.1%}")
 
     st0, resid, stable = overlap_stats(l18, l17, mrd, bounds, tr, w, h, "before correction")
+    if a.residual_png is not None:
+        out = pathlib.Path(a.residual_png) if a.residual_png else tc.decisions_dir() / "residuals.png"
+        residual_map_png(l18, l17, mrd, resid, bounds, out)
+        print("wrote", out)
+        return
     residual_png(resid, stable, st0, bd / "residuals.png")
     stats = {"before": st0}
     (bd / "residual_stats.json").write_text(json.dumps(stats, indent=1))
