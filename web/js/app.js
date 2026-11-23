@@ -39,6 +39,9 @@ async function main() {
   }
   const toGeo = (modelMod && modelMod.toGeoJSON) || shimGeoJSON;
 
+  // offline badge / SW registration must not depend on the map booting
+  import('./offline.js').then((off) => off.initOffline && off.initOffline(ui)).catch((e) => console.warn('offline init failed', e));
+
   const map = await initMap(document.getElementById('map'), { tilesJson, base });
   if (!tilesJson) {
     const b = document.getElementById('banner');
@@ -54,12 +57,6 @@ async function main() {
   if (editorMod) ui.setEditor(editorMod);
   ui.initUI(map, store);
   window.kokanee = { map, store, ui, tilesJson };
-
-  try {
-    const off = await import('./offline.js');
-    if (off.initOffline) await off.initOffline(ui);
-  } catch (e) { /* offline.js missing or failed: app still works */ }
-
 }
 
 main().catch((e) => { console.error(e); const b = document.getElementById('banner'); b.textContent = 'Failed to start: ' + e.message; b.hidden = false; });

@@ -175,7 +175,7 @@ export async function initMap(el, { tilesJson = null, base = null } = {}) {
 
   await new Promise((res) => {
     if (map.isStyleLoaded()) { res(); return; }
-    const t = setTimeout(() => { console.error('initMap: style load timed out after 10 s; continuing'); res(); }, 10000);
+    const t = setTimeout(() => console.error('initMap: style still not loaded after 10 s; still waiting'), 10000);
     map.once('style.load', () => { clearTimeout(t); res(); });
   });
 
