@@ -148,7 +148,8 @@ def main():
             route_q.update(s_q)
             if np.isfinite(s_z).any():
                 dz = np.diff(s_z[np.isfinite(s_z)])
-                msgs.append(f"skin +{dz[dz > 0].sum():.0f} m, len {s_len:.0f} m, {np.nanmean(s_sl > 25):.0%} >25 deg")
+                msgs.append(f"skin +{dz[dz > 0].sum():.0f} m, len {s_len:.0f} m, {np.nanmean(s_sl > 25):.0%} >25 deg, "
+                            f"max {np.nanmax(s_sl):.0f} deg, >35 {np.nanmean(s_sl > 35):.1%}, >45 {np.nanmean(s_sl > 45):.1%}")
         else:
             msgs.append("no skin")
         total_q.update(route_q)

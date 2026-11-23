@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "content_rev": 0,
-  "published_at": "2026-11-23T21:55:24Z",
+  "published_at": "2026-11-23T22:15:44Z",
   "dem_version": "2026-11-pilot",
   "pilot": true,
   "zones": [
@@ -167,7 +167,7 @@
       "gain_m": 800,
       "descent_m": null,
       "description": "Mark's Slot can be found on the North Face of Mt. Robert Smith so follow the directions for that route in order to gain the saddle below and to the East of the summit. Once at the saddle the descent is pretty obvious, you ski down the North face descending to valley bottom. Be aware of cornices on the ridge as they are common as is wind loading just over the ridge as you drop in. There are plenty of lines on this North aspect so you can skin back to the top to try other options or head East from the valley floor trending Southeast to arrive at Tanal Lake and Enterprise Pass. There is huge exposure from both sides once at Tanal Lake and from the West face of Tanal Peak so be sure to stay well away from this face and in the trees. From Tanal Lake the ascent is a moderate 200 metre ski up. Once you reach the pass Kokanee Glacier Cabin is to the East via the heli-pad.",
-      "notes": "Guide note: SOURCE ERROR: description text is a copy of #8 Mark's Slot; approach/descent for The Keyhole is undocumented. ATES has a 'Keyhole' landmark at -117.152373, 49.749477 (between Esmeralda Peak and Kokanee Glacier).\n\nPlacement: the guide text is a copy of #8 Mark's Slot, so this line is inferred. Skin follows the zone intro: cabin, Kaslo Lake E shore (same coordinates as #26), Keen Lake, then E up between the Battleship and Mt Kitchener onto the Kokanee Glacier and SE across it to the floor of the ATES 'Keyhole' notch (~2713 m, ~70 m SE of the ATES point, between Giants Kneecap and Esmeralda Peak). That is ~760 m of gain, plus ~60 m for the return over the Kokanee Lake/Keen Lake col: close to the guide's 800 m. Descent assumed to go W through the Keyhole along the lowest-angle corridor (least-slope path on the DEM: notch floor, then the bowl trending SW) to the SE shore of Kokanee Lake (~750 m), returning N past Keen Lake to the cabin (not drawn). Low confidence: the direction of travel and the descent side are guesses.",
+      "notes": "Guide note: SOURCE ERROR: description text is a copy of #8 Mark's Slot; approach/descent for The Keyhole is undocumented. ATES has a 'Keyhole' landmark at -117.152373, 49.749477 (between Esmeralda Peak and Kokanee Glacier).\n\nPlacement: the guide text is a copy of #8 Mark's Slot, so this line is inferred. Skin follows the zone intro: cabin, Kaslo Lake E shore (same coordinates as #26), Keen Lake, then E up between the Battleship and Mt Kitchener onto the Kokanee Glacier and SE across it to the floor of the ATES 'Keyhole' notch (~2713 m, ~70 m SE of the ATES point, between Giants Kneecap and Esmeralda Peak). That is ~760 m of gain, plus ~60 m for the return over the Kokanee Lake/Keen Lake col: close to the guide's 800 m. Descent assumed to go W through the Keyhole along the lowest-angle corridor (least-slope path on the DEM: notch floor, then the bowl trending SW) to the SE shore of Kokanee Lake (~750 m), returning N past Keen Lake to the cabin (not drawn). Low confidence: the direction of travel and the descent side are guesses. QA fix: the skin climb from Keen Lake to just S of the Battleship was re-routed along a least-slope DEM path (swinging ~300-600 m N of the old straight line) to avoid a 71 deg lidar rock step, so terrain under the skin now stays below 38 deg (the new stretch is on 30 m MRDEM data, so small steps may be smoothed out).",
       "approx": true,
       "confidence": "low",
       "descent": [
@@ -334,48 +334,64 @@
           49.762127
         ],
         [
-          -117.188569,
-          49.76105
+          -117.187921,
+          49.762139
         ],
         [
-          -117.187176,
-          49.759972
+          -117.185981,
+          49.763401
         ],
         [
-          -117.185506,
-          49.758986
+          -117.184871,
+          49.763403
         ],
         [
-          -117.18356,
-          49.758179
+          -117.182922,
+          49.762147
         ],
         [
-          -117.181197,
-          49.757643
+          -117.180978,
+          49.76215
         ],
         [
-          -117.17842,
-          49.757468
+          -117.180202,
+          49.762655
         ],
         [
-          -117.175643,
-          49.757382
+          -117.177703,
+          49.762659
         ],
         [
-          -117.172866,
-          49.757296
+          -117.174586,
+          49.760649
         ],
         [
-          -117.170089,
-          49.757211
+          -117.173197,
+          49.760651
         ],
         [
-          -117.168006,
-          49.757124
+          -117.172195,
+          49.760005
         ],
         [
-          -117.165923,
-          49.757127
+          -117.166696,
+          49.759869
+        ],
+        [
+          -117.165528,
+          49.759115
+        ],
+        [
+          -117.165303,
+          49.758288
+        ],
+        [
+          -117.164356,
+          49.757678
+        ],
+        [
+          -117.163634,
+          49.757679
         ],
         [
           -117.163147,
