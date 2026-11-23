@@ -1,0 +1,27 @@
+{
+  "_comment": "WS4 parity fixture. Three lines in the pilot area (tiles 2026-11-pilot). tolerance: metres for elev/length/distance metrics, degrees for slope/aspect/pitch.",
+  "tolerance": { "metres": 1, "degrees": 0.5 },
+  "points": [
+    { "name": "cabin", "lonlat": [-117.194844, 49.771692] },
+    { "name": "lidar-steep", "lonlat": [-117.1625, 49.7445] },
+    { "name": "seam-mid", "lonlat": [-117.1870, 49.7537] },
+    { "name": "mrdem-slope", "lonlat": [-117.1950, 49.7660] }
+  ],
+  "lines": [
+    {
+      "name": "lidar",
+      "expect_sources": [1],
+      "coords": [[-117.1720, 49.7440], [-117.1665, 49.7447], [-117.1610, 49.7443], [-117.1580, 49.7455]]
+    },
+    {
+      "name": "mrdem",
+      "expect_sources": [3],
+      "coords": [[-117.2000, 49.7700], [-117.1965, 49.7672], [-117.1930, 49.7650], [-117.1900, 49.7600]]
+    },
+    {
+      "name": "seam",
+      "expect_sources": [1, 3, 4],
+      "coords": [[-117.1948, 49.7570], [-117.1890, 49.7545], [-117.1830, 49.7520], [-117.1769, 49.7496]]
+    }
+  ]
+}
