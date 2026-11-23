@@ -175,7 +175,7 @@ export async function openRoute(id, { silent = false } = {}) {
     const low = (dm && dm.low_confidence) || (sm && sm.low_confidence);
     const cov = (m) => m && m.pct_by_source ? Object.entries(m.pct_by_source).filter(([, v]) => v > 0).map(([k, v]) => `${['missing', 'lidar 2018', 'lidar 2017', 'MRDEM-30', 'blend'][k] || k} ${Math.round(v)}%`).join(', ') : '';
     box.className = '';
-    box.innerHTML = `${low ? '<p><span class="badge bad">Low confidence: 30 m or missing data under this line, detail smoothed</span></p>' : ''}
+    box.innerHTML = `${low ? `<p><span class="badge bad">Low confidence on the ${[dm && dm.low_confidence ? 'descent' : '', sm && sm.low_confidence ? 'skin' : ''].filter(Boolean).join(' and ')} line: 30 m or missing data, detail smoothed</span></p>` : ''}
       <table class="m"><tr><th>Metric</th><th>Guide</th><th>Computed</th></tr>
       <tr><td>Gain (skin)</td><td>${fmt(r.gain_m, ' m')}</td><td>${fmt(sm && sm.cum_ascent_m, ' m')}</td></tr>
       <tr><td>Descent (net drop)</td><td>${fmt(r.descent_m, ' m')}</td><td>${fmt(dm && dm.net_drop_m, ' m')}</td></tr>
@@ -185,7 +185,7 @@ export async function openRoute(id, { silent = false } = {}) {
       <tr><td>Length at 30°+ / 35°+</td><td>–</td><td>${fmt(dm && dm.len_ge30_m, ' m')} / ${fmt(dm && dm.len_ge35_m, ' m')}</td></tr>
       <tr><td>Steepest pitch (along track)</td><td>–</td><td>${fmt(dm && dm.pitch_max_deg, '°')}</td></tr>
       <tr><td>Skin length</td><td>–</td><td>${fmt(sm && sm.length_m, ' m')}</td></tr></table>
-      <p class="muted">Coverage: ${esc(cov(dm) || cov(sm) || 'n/a')}</p>
+      <p class="muted">Coverage, descent: ${esc(cov(dm) || 'n/a')}<br>Coverage, skin: ${esc(cov(sm) || 'n/a')}</p>
       ${d ? '<h3>Descent profile</h3><canvas class="profile" id="pf-d"></canvas>' : ''}${s ? '<h3>Skin profile</h3><canvas class="profile" id="pf-s"></canvas>' : ''}
       <p class="muted">Grey = no data (gap). Orange tint = 30 m fallback stretch.</p>`;
     if (d) drawProfile($('pf-d'), d.samples);

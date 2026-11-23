@@ -106,6 +106,43 @@ function atesColorExpr() {
     'simple', ATES_COLORS.simple, 'challenging', ATES_COLORS.challenging, 'complex', ATES_COLORS.complex, '#888888'];
 }
 
+// bounds [w,s,e,n] grown by marginM metres on every side
+function paddedBounds(b, marginM) {
+  const dLat = marginM / 111320, dLng = marginM / (111320 * Math.cos(((b[1] + b[3]) / 2) * Math.PI / 180));
+  return [[b[0] - dLng, b[1] - dLat], [b[2] + dLng, b[3] + dLat]];
+}
+
+// DEM protocol: tiles outside the DEM bounds are replaced by a copy of the nearest edge pixels, so
+// terrain continues flat-extruded instead of dropping to 0 m (which draws tall walls/streaks).
+const lon2x = (lon, z) => Math.floor(((lon + 180) / 360) * 2 ** z);
+const lat2y = (lat, z) => { const r = lat * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * 2 ** z); };
+let demProtocolDone = false;
+function registerDemProtocol(bounds) {
+  if (demProtocolDone) return;
+  demProtocolDone = true;
+  maplibregl.addProtocol('kdem', async (params, abortController) => {
+    const m = /^kdem:\/\/(.*)\/(\d+)\/(\d+)\/(\d+)\.png$/.exec(params.url);
+    const fetchTile = async (z, x, y) => {
+      const r = await fetch(`${m[1]}/${z}/${x}/${y}.png`, { signal: abortController && abortController.signal });
+      if (!r.ok) throw new Error(`DEM tile ${z}/${x}/${y}: ${r.status}`);
+      return r.arrayBuffer();
+    };
+    if (!m) throw new Error('bad kdem url');
+    const z = +m[2], x = +m[3], y = +m[4];
+    const x0 = lon2x(bounds[0], z), x1 = lon2x(bounds[2], z), y0 = lat2y(bounds[3], z), y1 = lat2y(bounds[1], z);
+    if (x >= x0 && x <= x1 && y >= y0 && y <= y1) return { data: await fetchTile(z, x, y) };
+    const cx = Math.min(x1, Math.max(x0, x)), cy = Math.min(y1, Math.max(y0, y));
+    const bmp = await createImageBitmap(new Blob([await fetchTile(z, cx, cy)], { type: 'image/png' }));
+    const W = bmp.width, H = bmp.height;
+    const cv = new OffscreenCanvas(W, H), g = cv.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    const sx = x < x0 ? 0 : x > x1 ? W - 1 : 0, sw = x < x0 || x > x1 ? 1 : W;
+    const sy = y < y0 ? 0 : y > y1 ? H - 1 : 0, sh = y < y0 || y > y1 ? 1 : H;
+    g.drawImage(bmp, sx, sy, sw, sh, 0, 0, W, H);
+    return { data: await (await cv.convertToBlob({ type: 'image/png' })).arrayBuffer() };
+  });
+}
+
 export async function initMap(el, { tilesJson = null, base = null } = {}) {
   tiles = tilesJson;
   baseUrl = base || new URL('./', document.baseURI).href;
@@ -120,7 +157,8 @@ export async function initMap(el, { tilesJson = null, base = null } = {}) {
     },
     center: HOME.center, zoom: hasTiles ? HOME.zoom : 12.5,
     pitch: hasTiles ? HOME.pitch : 0, bearing: hasTiles ? HOME.bearing : 0,
-    maxPitch: 85, maxZoom: 18, minZoom: 8,
+    maxPitch: 85, maxZoom: 17, minZoom: 11,
+    ...(hasTiles && tiles.bounds ? { maxBounds: paddedBounds(tiles.bounds, 2000) } : {}),
     attributionControl: { compact: true },
     canvasContextAttributes: { antialias: true },
   });
@@ -135,14 +173,20 @@ export async function initMap(el, { tilesJson = null, base = null } = {}) {
   for (const f of basemapData.features) if (f.properties && f.properties.kind === 'glacier' && f.properties.survey_date) dates.add(String(f.properties.survey_date));
   meta.glacierSurvey = [...dates];
 
-  await new Promise((res) => { if (map.isStyleLoaded()) res(); else map.once('style.load', res); });
+  await new Promise((res) => {
+    if (map.isStyleLoaded()) { res(); return; }
+    const t = setTimeout(() => { console.error('initMap: style load timed out after 10 s; continuing'); res(); }, 10000);
+    map.once('style.load', () => { clearTimeout(t); res(); });
+  });
 
   // ---- sources
   if (hasTiles) {
     const dem = tiles.layers.dem;
+    let demTiles = tileUrl('dem');
+    if (tiles.bounds && typeof OffscreenCanvas !== 'undefined' && maplibregl.addProtocol) { registerDemProtocol(tiles.bounds); demTiles = `kdem://${baseUrl}tiles/dem/{z}/{x}/{y}.png`; }
     map.addSource('dem', {
-      type: 'raster-dem', tiles: [tileUrl('dem')], tileSize: 256, encoding: dem.encoding || 'terrarium',
-      minzoom: dem.minzoom ?? 10, maxzoom: dem.maxzoom ?? 15, ...(tiles.bounds ? { bounds: tiles.bounds } : {}),
+      type: 'raster-dem', tiles: [demTiles], tileSize: 256, encoding: dem.encoding || 'terrarium',
+      minzoom: dem.minzoom ?? 10, maxzoom: dem.maxzoom ?? 15,
     });
     try {
       const demSource = new mlcontour.DemSource({ url: tileUrl('dem'), encoding: dem.encoding || 'terrarium', maxzoom: dem.maxzoom ?? 15, worker: true });
@@ -167,6 +211,12 @@ export async function initMap(el, { tilesJson = null, base = null } = {}) {
     addRasterOverlay('aspect', 'aspect', 0.7, 'nearest');
     addRasterOverlay('slope', 'slope', 0.75, 'nearest');
     addRasterOverlay('quality', 'quality', 0.8, 'nearest');
+  }
+  if (hasTiles && tiles.bounds) {
+    // flat mask outside the DEM bounds: hides hillshade shading on the edge-extended terrain
+    const [w, so, e, n] = tiles.bounds;
+    map.addSource('outside-mask', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [[[-180, -85], [180, -85], [180, 85], [-180, 85], [-180, -85]], [[w, so], [w, n], [e, n], [e, so], [w, so]]] } } });
+    add({ id: 'outside-mask', type: 'fill', source: 'outside-mask', paint: { 'fill-color': '#e9ecef', 'fill-opacity': 1, 'fill-antialias': false } });
   }
   add({ id: 'lakes', type: 'fill', source: 'basemap', filter: ['==', ['get', 'kind'], 'lake'], paint: { 'fill-color': '#74c0fc', 'fill-opacity': 0.7, 'fill-outline-color': '#1c7ed6' } });
   add({ id: 'creeks', type: 'line', source: 'basemap', filter: ['==', ['get', 'kind'], 'creek'], paint: { 'line-color': '#339af0', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 0.6, 15, 1.8], 'line-opacity': 0.9 } });
@@ -200,7 +250,7 @@ export async function initMap(el, { tilesJson = null, base = null } = {}) {
   add({ id: 'routes-descent-casing', type: 'line', source: 'routes-descent', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#ffffff', 'line-width': 7 } });
   add({ id: 'routes-descent', type: 'line', source: 'routes-descent', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': 4 } });
   add({ id: 'routes-label', type: 'symbol', source: 'routes-descent',
-    layout: { 'symbol-placement': 'line', 'text-field': ['concat', ['to-string', ['get', 'num']], ['case', ['==', ['get', 'approx'], true], '≈', '']], 'text-font': ['Noto Sans Regular'], 'text-size': 13, 'symbol-spacing': 300 },
+    layout: { 'symbol-placement': 'line', 'text-field': ['concat', ['to-string', ['get', 'num']], ['case', ['==', ['get', 'approx'], true], '~', '']], 'text-font': ['Noto Sans Regular'], 'text-size': 13, 'symbol-spacing': 300 },
     paint: { 'text-color': '#212529', 'text-halo-color': '#ffffff', 'text-halo-width': 2 } });
   const poiColor = ['match', ['get', 'type'], 'hut', '#e03131', 'helipad', '#7048e8', 'peak', '#343a40', 'pass', '#a9712c', 'lake', '#1c7ed6', '#495057'];
   add({ id: 'pois', type: 'circle', source: 'pois', paint: { 'circle-radius': ['match', ['get', 'type'], 'hut', 8, 5], 'circle-color': poiColor, 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2 } });

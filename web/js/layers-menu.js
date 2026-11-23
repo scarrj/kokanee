@@ -9,7 +9,7 @@ function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch {
 
 const DEF_SLOPE = [['27–30°', '#ffe066'], ['30–35°', '#ff922b'], ['35–40°', '#f03e3e'], ['40–45°', '#ae3ec9'], ['≥45°', '#343a40']];
 const DEF_ASPECT = [['N', '#4dabf7'], ['NE', '#38d9a9'], ['E', '#94d82d'], ['SE', '#ffd43b'], ['S', '#ff922b'], ['SW', '#f03e3e'], ['W', '#cc5de8'], ['NW', '#7950f2']];
-const DEF_QUALITY = [['No data (missing)', '#9e9e9e', true], ['LidarBC 2018 (1 m)', '#2b8a3e'], ['HRDEM lidar 2017 (1 m)', '#74b816'], ['MRDEM-30 fallback (30 m, smoothed)', '#e8590c'], ['Blend zone', '#f08c00']];
+const DEF_QUALITY = [['No data', '#9e9e9e', true], ['LidarBC 2018 (1 m)', '#2b8a3e'], ['HRDEM lidar 2017 (1 m)', '#74b816'], ['MRDEM-30 fallback (30 m, smoothed)', '#e8590c'], ['Blend zone', '#f08c00']];
 
 const sw = (color, cls = '') => `<span class="sw ${cls}" style="${color ? `background:${color}` : ''}"></span>`;
 const li = (swatch, text) => `<div class="li">${swatch}<span>${esc(text)}</span></div>`;
@@ -18,7 +18,8 @@ const BELOW = (t) => li('<span class="sw clear"></span>', t);
 
 function entryLabel(e) { return e.label ?? e.sector ?? e.name ?? (e.min != null ? `${e.min}–${e.max ?? ''}` : ''); }
 function fromLegend(arr, defs) {
-  if (Array.isArray(arr) && arr.length) return arr.map((e) => li(sw(e.color), entryLabel(e))).join('');
+  // code 0 = no data: always "No data" with the hatched swatch, whatever tiles.json says
+  if (Array.isArray(arr) && arr.length) return arr.map((e) => (e.code === 0 ? li('<span class="sw hatch"></span>', 'No data') : li(sw(e.color), entryLabel(e)))).join('');
   return defs.map(([l, c, hatch]) => li(hatch ? '<span class="sw hatch"></span>' : sw(c), l)).join('');
 }
 
@@ -38,7 +39,7 @@ function legendHTML(id) {
       return li(sw('#74c0fc'), 'Lake') + li(sw('#339af0', 'line'), 'Creek') + li(sw('#e3f2fd'), `Glacier (survey: ${d.length ? d.join(', ') : 'TRIM c. 1980s–90s'})`);
     }
     case 'pois': return li(sw('#e03131'), 'Hut') + li(sw('#343a40'), 'Peak') + li(sw('#a9712c'), 'Pass') + li(sw('#1c7ed6'), 'Lake') + li(sw('#7048e8'), 'Helipad');
-    case 'descents': return li(sw('#d9480f', 'line'), 'Descent (solid, zone colour; ≈ = approximate)');
+    case 'descents': return li(sw('#d9480f', 'line'), 'Descent (solid, zone colour; ~ = approximate)');
     case 'skin': return li(sw('#d9480f', 'line dash'), 'Skin track (dashed)');
     case 'zones': return li(sw('#495057'), 'Zone info button');
     case 'closures': return li(sw('rgba(224,49,49,.35)'), 'Closure') + li(sw('rgba(201,42,42,.35)'), 'No-go') + li(sw('rgba(240,140,0,.35)'), 'Note');

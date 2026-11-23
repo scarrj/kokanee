@@ -84,7 +84,12 @@ body.panel-open .maplibregl-ctrl-bottom-right { right: var(--panel-w); }
   #panel-handle span { width: 44px; height: 5px; border-radius: 3px; background: var(--muted); }
   #layers { top: auto; width: 100%; height: 75%; border-radius: 14px 14px 0 0; }
   body.panel-open .maplibregl-ctrl-top-right, body.panel-open .maplibregl-ctrl-bottom-right { right: 0; }
-  body.panel-open .maplibregl-ctrl-bottom-right { bottom: 30%; }
+  body.panel-open .maplibregl-ctrl-bottom-right { bottom: calc(30vh + 4px); }
+  body.panel-open:has(#panel[data-state=expanded]) .maplibregl-ctrl-bottom-right { bottom: calc(85vh + 4px); }
+  body:has(#layers:not([hidden])) .maplibregl-ctrl-bottom-right { bottom: calc(75vh + 4px); }
+  /* lift the offline badge (inline-styled by offline.js) above any open sheet */
+  body.panel-open #offline-badge { bottom: calc(30vh + 8px) !important; }
+  body.panel-open:has(#panel[data-state=expanded]) #offline-badge, body:has(#layers:not([hidden])) #offline-badge { display: none; }
   .maplibregl-ctrl-group button { width: var(--tap); height: var(--tap); }
   #readout { top: calc(var(--bar) + 6px); }
   #bar .title { font-size: 15px; }

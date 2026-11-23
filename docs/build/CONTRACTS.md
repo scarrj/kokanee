@@ -137,7 +137,7 @@ These are the fixed MapLibre ids. Sources and layers share names where it's 1:1.
 | ATES | `ates-zones`, `ates-paths`, `ates-decision`, `ates-boundary`, `ates-road` |
 | Content | `areas-fill`, `areas-line`, `routes-skin`, `routes-descent`, `route-highlight`, `routes-label`, `zone-info`, `pois` |
 | Editor (WS6 only) | `edit-vertices`, `edit-midpoints`, `edit-line` |
-| Auxiliary (added by WS3) | `routes-descent-casing`, `route-highlight-skin`, `zone-info-label`, `pois-label`, `elev-ref-2100-label` |
+| Auxiliary (added by WS3) | `routes-descent-casing`, `route-highlight-skin`, `zone-info-label`, `pois-label`, `elev-ref-2100-label`, `outside-mask` (flat fill outside the tile bounds; the display-only `kdem://` protocol edge-extends DEM tiles there, while the sampler reads the plain tiles) |
 
 The terrain source is `dem` (raster-dem, encoding `terrarium`).
 
