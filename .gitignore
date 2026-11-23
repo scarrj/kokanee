@@ -1,0 +1,14 @@
+# Large source data (never commit)
+1m_tif_data/
+20m_contour/
+topo/*.pdf
+ates/*.kmz
+# Build intermediates and caches
+/build/
+tools/.venv/
+tools/cache/
+__pycache__/
+*.pyc
+# Local settings
+.claude/settings.local.json
+.env
