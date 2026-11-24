@@ -239,3 +239,13 @@ WS10: tools/make_satellite.py; web/tiles/sat z10-14 JPEG, 228 tiles, 2.84 MB; sc
 WS3: satellite source/layer from sat.json (draw order 2, default off), menu row with date, attribution while on, hillshade x0.6 while on; row hidden if sat.json missing
 Orchestrator viewed cabin z14 and overview z12 tiles: natural colour, lakes dark. Manifest 5051 files / ~103 MB; check_all --quick pass
 ```
+
+### Final assembly + delta updates, orchestrator 2026-11-24
+```
+User answers: edits ongoing until the trip; remove closure (trip before January); no return lines; user will check routes 19-21, 28, 10-13, si2, r07/r08 sidehill, r34 skin; phone worked well; identity scarrj noreply OK; repo made PUBLIC
+Final assembly: assemble_routes.py --force -> content_rev 1, 9 zones, 41 routes, 25 pois, 0 areas; seeds -> content/archive/; check_all --quick 7/7
+WS7 delta install (sw.js): unchanged files (path + sha256) copied from previous complete cache; routes.json re-hashed; harness test: one-route edit -> fetched only manifest + routes.json, copied 5050 (pane cannot register SW; real-SW check after deploy)
+README: edit -> export for publishing -> upload web/data/routes.json -> auto deploy; tiles stay in git (LFS rejected: 1 GB/month bandwidth vs ~100 MB per deploy)
+Untracked AGENTS.md (copy of CLAUDE.md, created 09:38 outside this session): left uncommitted pending user
+Gate C: awaiting user's go-ahead to push + enable Pages (source: GitHub Actions)
+```
