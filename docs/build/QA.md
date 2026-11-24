@@ -52,3 +52,24 @@ Automated: `cd tools && python -m uv run check_all.py` passes 8/8 (smoke_runtime
 10. [WS8] low: confirmed: r34 skin has a steep step near 487,900 / 5,511,650 (lidar max 71 deg, 0.5% over 45 deg); not re-measured
 11. [WS9 note, orchestrator] the browser origin localhost:8765 had a leftover Cache Storage entry `kokanee-ce5697d63d16` from WS7's scratch page (10-file manifest, mentions `tiles/dem/1/0/0.png`). WS9 deleted it so verify() reports "nothing cached yet". Before the real-Chrome offline run, run `python tools/make_asset_manifest.py web` (no `web/asset-manifest.json` exists locally) and use a clean profile
 12. [WS3/WS6, info] the viewport 0x0 / dormant-map behaviour of the pane makes long `await`s in scripts hang until a screenshot is taken; automated browser checks should poll with short calls
+
+
+## Full run (2026-11-23, full bbox, routes.json in review mode: 9 zones, 41 routes)
+Automated: `check_all.py` 8/8 pass (4,822 files in the manifest). Browser pane desktop 1280x720 and mobile preset 375x812; the offline run used real Chrome because the pane cannot register a service worker (see defect 14).
+
+- [x] Zones: all 9 info panels open with a description and the right route count (Giegerich 3, Hut 0, John Carter 11, Longer Tours 2, Nansen 6, Pyramid 5, Robert Smith 2, S&I 6, Tanal 6; matches the data). Hut panel shows text and no route list.
+- [x] Routes: all 41 opened programmatically. 40 show guide cards, descent and skin profile charts, the low-confidence banner and one coverage line for the descent and one for the skin (pilot defect 5 is fixed). No NaN or undefined values. si6 (Summit ski options) has no lines or profile by design, 4 cards only.
+- [x] Camera limits: maxBounds = tile bounds + 2 km, minZoom 11 (clamps to about 11.8 at this viewport), maxZoom 17 (19 clamps to 16.9). Pitch 60-70 at the W, N, S edges and the NE corner: terrain fades to the flat mask with no streaks or walls (pilot defect 7 is fixed).
+- [x] Legend desktop: on-map legend shows when an overlay is on (aspect rose + slope bands + "No data"), bottom-left above the offline badge, collapsible, hidden when no overlay is on.
+- [~] Legend mobile: legend sits top-left under the header and does not overlap map controls, but a tap readout appears at the same spot and fully covers it (defect 13).
+- [x] Aspect, new palette: a south-facing slope (49.7525, -117.218; sampler slope 40, aspect 178-191) renders red/pink; N is blue, E green, SE amber on the rose. Not re-checked on glacier lidar.
+- [x] Offline (real Chrome, localhost): first load to "Offline ready" 34 s (30 s download of 4,822 files / 100.3 MB, 4 s verify; localhost disk speed, so a phone on the real network will be slower). Badge reads "Offline ready - rev 0 - DEM v2026-11-full - 102 MB". Deleting `tiles/dem/12/713/1392.png` then Menu > Re-verify gives "Not offline ready - 1 missing" with Retry; Retry took 5.5 s and returns to ready, the tile is back in the cache. Server-stopped reload not run. Calling `offline.verify()` directly does not update the badge (only the run/retry paths emit), expected.
+- [x] Frame cost, terrain + aspect + slope, pitch 60, bearing sweep, `map.redraw()` + `readPixels`, 90 frames at cabin / north (49.805) / south (49.63) at z13.5: desktop 1280x668 mean 14.3 / 14.4 / 13.3 ms (p95 33 / 23 / 28 ms); mobile preset 375x812 dpr 2 mean 11.9 / 10.9 / 10.6 ms (p95 20 / 17 / 22 ms). PC GPU only; phone numbers still needed.
+- [x] `profile()` r35 skin (79 vertices, 1,809 samples, about 9 km): 138 ms cold, 94 ms warm (the pilot 3 km line took 66 / 3 ms).
+- [~] Slow first paint: after a jump to z15.5 with terrain on the map is blank for 2 s (Chrome) to several seconds (pane) while z15 tiles decode (defect 15).
+
+### Full defects
+13. [WS3] medium - mobile: the on-map legend and the tap readout occupy the same top-left spot (8,58) and the readout hides the legend entirely - 375x812, turn on Aspect, tap the map
+14. [WS7] low - the browser pane (localhost and 127.0.0.1) cannot register the service worker ("An unknown error occurred when fetching the script"), so the offline badge stays in a not-ready state there and offline needs real Chrome; pilot defect 3 (no timeout) now shows as a failed register in the console - open the app in the pane, console
+15. [WS3] low - after a long camera jump at pitch 50 and z15.5 the whole map is blank for 2-8 s (nothing, not even basemap lines, until DEM tiles decode with terrain on); with terrain off it paints at once - jumpTo({zoom:15.5}) with terrain on
+16. [WS3] low - Hut panel shows a "Routes (0)" style empty state and no routes; confirm this is intended - open the Hut and access info button

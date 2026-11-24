@@ -1,6 +1,6 @@
 # Zoom limits (pilot measurements)
 
-Status: **pilot measured 2026-11-23** (WS9). Recompute from `web/tiles` at full scope.
+Status: **pilot and full scope measured 2026-11-23** (WS9). Full-scope numbers are in the section at the end.
 Pilot area: bbox -117.2153..-117.1319 / 49.7378..49.7829, about 6.1 x 5.0 km (30.5 km2).
 
 ## Bytes per layer per zoom (MB, recomputed from `web/tiles` on disk; matches WS1)
@@ -48,3 +48,17 @@ Pixel size at lat 49.77: z15 = 3.1 m, z16 = 1.5 m. 71% of the pilot cells are 30
 3. Pack target: pilot about 10.5 MB; full scope = 2 MB + 0.28 MB/km2 x area. Check this against the phone's free storage and the iOS cache budget before the full build.
 4. Cap the map: `maxZoom` 17 (z15 tiles overscaled twice is already blurry), `minZoom` 11 and `maxBounds` = tile bounds plus a margin. Today minZoom 8 / maxZoom 18 / no maxBounds, so panning or zooming out shows extruded streaks beyond the DEM edge (see QA.md defect).
 5. Revisit after phone numbers: if the phone drops under about 30 fps with terrain + 2 overlays, reduce `pixelRatio` on touch devices or drop terrain exaggeration/hillshade first, not zoom.
+
+
+## Full scope (measured 2026-11-23)
+
+Full bbox -117.2711..-117.0761 / 49.6028..49.8234 (about 14.2 x 24.5 km, 350 km2), tiles z10-15 for every layer (no z16).
+- Pack: `web/asset-manifest.json` total_bytes = **100,253,176 B (100.3 MB, shown as 102 MB in the badge, 4,822 files)**. This is about 9.5x the pilot 10.5 MB pack, close to the 2 MB + 0.28 MB/km2 estimate (about 100 MB).
+- Precache on localhost in real Chrome, cold: 30 s download + 4 s verify = **34 s to "Offline ready"**. On a phone over the hut-trip network, scale by bandwidth (100 MB at 20 Mbit/s is about 40 s, at 5 Mbit/s about 3 min). One missing tile re-verify + Retry: 5.5 s.
+- Frame cost (terrain + aspect + slope, pitch 60, PC GPU): desktop mean 13-14 ms, mobile preset 11-12 ms. `profile()` of the longest route (r35 skin, about 9 km, 1,809 samples): 138 ms cold, 94 ms warm.
+- Camera limits are in: maxBounds = tile bounds + 2 km, minZoom 11, maxZoom 17; no edge streaks at pitch 60-70.
+
+Recommendation (current):
+1. Keep maxzoom 15 for all layers and `analysis_zoom` 15. A z16 DEM would add about 200 MB at full scope for no information over the 30 m park core.
+2. 100 MB is fine for Android Chrome and desktop. On iOS, Safari may evict site storage unless the app is added to the Home Screen: the user should do Add to Home Screen, open it once with signal, and look for "Offline ready" with "persisted". If iOS evicts it, the lever is to drop the elev/quality overlays from the precache (about 12% of tiles) or to cut z15 from the outermost 2 km, not to lower the analysis zoom.
+3. Still open: phone frame rate (ask the user to rotate with terrain + slope + aspect on; below about 30 fps, lower pixelRatio on touch devices first).
