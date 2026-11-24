@@ -5,7 +5,7 @@ The orchestrator maintains this log. Agent reports are appended unchanged (forma
 | Card | Pilot | Full | Branch | Notes |
 |---|---|---|---|---|
 | WS0 foundations | done | n/a | main | runtime pinned; datums verified; DEM survey done; docs written |
-| WS1 terrain | done (+qcode z15, exact readback verified) | — | main ecfd90b | 11 MB pilot tiles; lidar-MRDEM median +0.5 m, no correction; seam 3/302k flagged |
+| WS1 terrain | done (+qcode z15, exact readback verified) | done | main 8394a9b | 11 MB pilot tiles; lidar-MRDEM median +0.5 m, no correction; seam 3/302k flagged |
 | WS2 basemap | done | done | main | full: 296 lakes, 3067 creeks, 5 glaciers dated 2021 (BC GBA_GLACIERS_SP, 30 m); 1.31 MB |
 | WS3 viewer | partial | — | main | viewer works on pilot tiles (mobile verified); readout/profile await WS4; scale bar + desktop panel unverified |
 | WS4 metrics | done | — | main | parity 3/3 exact; 3.5 km profile 51 ms cold / 5 ms warm |
@@ -146,4 +146,15 @@ FILES: tools/build_basemap.py, web/data/basemap.geojson, web/data/ATTRIBUTION.md
 ACCEPTANCE: convert_ates (64/24/6/1/1/24) + build_basemap --scope full -> pass; 296 lakes, 3067 creeks (order>=1, 5 m simplify), 5 glaciers; 1.31 MB
 DECISIONS: glaciers from WHSE_BASEMAPPING.GBA_GLACIERS_SP (BC Glacier Based Area, OGL-BC), SOURCE_YEAR 2021 (Landsat 8 30 m / Sentinel-2 20 m); survey_date "2021 (Landsat 8 30m, Sentinel-2 20m)"; TRIM fallback kept only for missing years; 1985 layer GBA_GLACIERS_HISTORICAL_SP exists (unused). _pois.json ids unchanged
 ISSUES: outlines are coarse (30 m)
+```
+
+### WS1 terrain (full)
+```
+CARD: WS1 terrain | SCOPE: full | STATUS: done (resumed once after an API rate limit)
+FILES: tools/make_tiles.py, web/tiles/** (96.95 MB), docs/decisions/{vertical-datum.md,residuals.png,seam-report.md,seam-report.png}
+ACCEPTANCE: build_terrain + make_tiles --scope full exit 0; John Carter 2610.33 m q1; Tanal aspect SW q3; check_all --quick 7/7
+SOURCES: lidar2018 44.24%, hrdem2017 14.31%, MRDEM 39.57%, blend 1.87%, missing 0; seam 32/1,601,330 flagged (150 m feather)
+TILES MB: dem 77.63 (z15 56.14), slope 9.44, aspect 7.27, elev 1.65, quality 0.71, qcode 0.25; 608 z15 tiles per layer
+DECISIONS: z10-15 all layers; aspect S=red; residuals lidar-MRDEM +0.78 m MAD 1.47 (n=37,904), HRDEM-MRDEM +0.98 MAD 1.52; lidar2018==hrdem2017; planar tilt <=0.07 m/km -> NO correction
+ISSUES: lidar-MRDEM median rises with elevation (-0.5 m at 1300 m -> +2.5 m at 2700 m; MRDEM clips summits): MRDEM-only park-core summits may read 1-2.5 m low. Tiles (97 MB) are committed to git: revisit (LFS or release asset) before Gate C
 ```
