@@ -6,7 +6,7 @@ The orchestrator maintains this log. Agent reports are appended unchanged (forma
 |---|---|---|---|---|
 | WS0 foundations | done | n/a | main | runtime pinned; datums verified; DEM survey done; docs written |
 | WS1 terrain | done (+qcode z15, exact readback verified) | — | main ecfd90b | 11 MB pilot tiles; lidar-MRDEM median +0.5 m, no correction; seam 3/302k flagged |
-| WS2 basemap | done | — | main 6636953 | 64 zones/24 paths/6 decisions; 75 lakes, 330 creeks, 4 glaciers (undated: TRIM fallback) |
+| WS2 basemap | done | done | main | full: 296 lakes, 3067 creeks, 5 glaciers dated 2021 (BC GBA_GLACIERS_SP, 30 m); 1.31 MB |
 | WS3 viewer | partial | — | main | viewer works on pilot tiles (mobile verified); readout/profile await WS4; scale bar + desktop panel unverified |
 | WS4 metrics | done | — | main | parity 3/3 exact; 3.5 km profile 51 ms cold / 5 ms warm |
 | WS5 text | done | — | main | 41 routes seeded; pilot routes.json (r26, r34) validates in Py + JS |
@@ -137,4 +137,13 @@ User supplied lidar_data/Kokanee_DEM_* (0.75 arcsec, 0.5x0.5 deg, EPSG:2955 + WG
 CONTRACTS: aspect palette S=red; on-screen legend (#ui); all tile layers z10-15 (no z16 overlays), camera z11-17
 Wave 1 launched: WS1 full (Sonnet high), WS2 full (Sonnet medium), WS3 on-screen legend (Sonnet medium). WS8 fan-out waits for WS1 merged_dem
 Open for user: satellite source; closure extent; pilot edits to export (if any); r34 skin MRDEM stretch; Kokanee Lake -> cabin return line; phone numbers
+```
+
+### WS2 basemap (full)
+```
+CARD: WS2 basemap | SCOPE: full | STATUS: done
+FILES: tools/build_basemap.py, web/data/basemap.geojson, web/data/ATTRIBUTION.md
+ACCEPTANCE: convert_ates (64/24/6/1/1/24) + build_basemap --scope full -> pass; 296 lakes, 3067 creeks (order>=1, 5 m simplify), 5 glaciers; 1.31 MB
+DECISIONS: glaciers from WHSE_BASEMAPPING.GBA_GLACIERS_SP (BC Glacier Based Area, OGL-BC), SOURCE_YEAR 2021 (Landsat 8 30 m / Sentinel-2 20 m); survey_date "2021 (Landsat 8 30m, Sentinel-2 20m)"; TRIM fallback kept only for missing years; 1985 layer GBA_GLACIERS_HISTORICAL_SP exists (unused). _pois.json ids unchanged
+ISSUES: outlines are coarse (30 m)
 ```

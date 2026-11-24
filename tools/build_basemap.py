@@ -16,7 +16,7 @@ WFS = "https://openmaps.gov.bc.ca/geo/pub/wfs"
 # lon/lat bboxes (W, S, E, N). Pilot = E 484500-490500, N 5509500-5514500 (EPSG:2955) + margin.
 SCOPES = {"pilot": (-117.23, 49.73, -117.12, 49.79), "full": (-117.32, 49.55, -117.02, 49.87)}
 LAYERS = {"lake": "WHSE_BASEMAPPING.FWA_LAKES_POLY", "creek": "WHSE_BASEMAPPING.FWA_STREAM_NETWORKS_SP",
-          "glacier": "WHSE_BASEMAPPING.FWA_GLACIERS_POLY"}
+          "glacier": "WHSE_BASEMAPPING.GBA_GLACIERS_SP"}  # 2021 Glacier Based Area outlines (dated); FWA_GLACIERS_POLY is undated TRIM
 GLACIER_DATE = "TRIM, c. 1980s\u201390s"
 to_m = pyproj.Transformer.from_crs(4326, 2955, always_xy=True).transform
 to_ll = pyproj.Transformer.from_crs(2955, 4326, always_xy=True).transform
@@ -91,7 +91,8 @@ def main():
                 props["name"] = name
                 props["order"] = p.get("STREAM_ORDER")
             if kind == "glacier":
-                props["survey_date"] = GLACIER_DATE
+                yr = p.get("SOURCE_YEAR")
+                props["survey_date"] = (f"{yr} ({p.get('SOURCE_IMAGERY')})" if yr else GLACIER_DATE)
             geom = mapping(g)
             geom = {"type": geom["type"], "coordinates": rnd(geom["coordinates"])}
             out.append({"type": "Feature", "properties": props, "geometry": geom})
@@ -103,12 +104,12 @@ def main():
     print(a.scope, counts, f"{p.stat().st_size/1e6:.2f} MB")
 
     section = ("<!-- basemap:begin -->\n## Basemap vectors\n"
-               "- Lakes, streams and glacier outlines: BC Freshwater Atlas (FWA_LAKES_POLY, FWA_STREAM_NETWORKS_SP, "
-               "FWA_GLACIERS_POLY), BC Data Catalogue via openmaps.gov.bc.ca WFS. Contains information licensed under the "
+               "- Lakes and streams: BC Freshwater Atlas (FWA_LAKES_POLY, FWA_STREAM_NETWORKS_SP), BC Data Catalogue via openmaps.gov.bc.ca WFS. Contains information licensed under the "
                "Open Government Licence - British Columbia. Retrieved " + time.strftime("%Y-%m-%d") + ", clipped by bbox, "
                "geometry simplified (streams 5 m).\n"
-               "- Glacier outlines carry no survey-date attribute in the FWA; `survey_date` is recorded as the TRIM-era "
-               "default (c. 1980s\u201390s) and outlines are likely out of date.\n"
+               "- Glacier outlines: BC Glacier Based Area 2021 (WHSE_BASEMAPPING.GBA_GLACIERS_SP, SOURCE_YEAR 2021, "
+               "Landsat 8 30 m / Sentinel-2 20 m), BC Data Catalogue, OGL-BC. Replaces the undated FWA_GLACIERS_POLY (TRIM-era). "
+               "Outlines are coarse (30 m imagery) and shown with their survey year.\n"
                "<!-- basemap:end -->\n")
     att = ROOT / "web" / "data" / "ATTRIBUTION.md"
     txt = att.read_text(encoding="utf-8") if att.exists() else "# Data attribution\n\n"
