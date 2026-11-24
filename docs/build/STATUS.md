@@ -231,3 +231,11 @@ Defects 13 fixed (mobile legend vs readout); 14 pane SW quirk (env); 15 low blan
 Note: WS9 used Claude in Chrome for the offline run (pane refused SW); user informed
 Open for user: full review on PC + phone; satellite source; pilot edits; closure extent; return lines; route checks listed in WS8 reports; Gate C (identity, public/private, tiles in git vs LFS)
 ```
+
+### WS10 satellite (full) + WS3 layer, 2026-11-24
+```
+User chose "Sentinel-2 offline" (covers the Sentinel-2 L2A download)
+WS10: tools/make_satellite.py; web/tiles/sat z10-14 JPEG, 228 tiles, 2.84 MB; scene 2024-09-05 (S2B_11UMQ/11UMR same pass), cloud/shadow 0.003%, snow 0.75%; chosen by eye over the SCL-best 2025-09-20 (valley haze); stretch 0.0053-0.2522, gamma 1.2; make_tiles leaves sat/ alone
+WS3: satellite source/layer from sat.json (draw order 2, default off), menu row with date, attribution while on, hillshade x0.6 while on; row hidden if sat.json missing
+Orchestrator viewed cabin z14 and overview z12 tiles: natural colour, lakes dark. Manifest 5051 files / ~103 MB; check_all --quick pass
+```
