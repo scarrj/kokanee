@@ -119,6 +119,7 @@ Empty lines (fewer than 2 points) are skipped.
   - the sampler reads the code from these tiles.
   - `tiles.json.layers.qcode = {minzoom: A, maxzoom: A, encoding: "gray-code"}`.
 - **Slope/aspect grid.** Slope and aspect use Horn's method on the Web-Mercator pixel grid of the zoom concerned, with cell size = `40075016.686 / (256·2^z) · cos(lat of the row)` metres. Aspect is the direction the slope faces, in degrees clockwise from N. The sampler (WS4) must use the same cell size at `analysis_zoom`.
+- **Satellite imagery** (user request 2026-11-24, WS10): `web/tiles/sat/{z}/{x}/{y}.jpg`, z10–14, 256 px JPEG (quality ~80), Sentinel-2 L2A true colour (B04/B03/B02, 10 m), one cloud-free late-summer mosaic clipped to the project bbox, transparent nowhere (no alpha; outside the data is not written). Own manifest `web/tiles/sat/sat.json` (NOT in `tiles.json`, which WS1 owns): `{"minzoom":10,"maxzoom":14,"bounds":[w,s,e,n],"date":"YYYY-MM-DD"|"YYYY-MM-DD/YYYY-MM-DD","scenes":[ids],"attribution":"Contains modified Copernicus Sentinel data <year>"}`. Display only: never used by metrics.
 - **Slope angle bands:** Horn's 3×3 slope on the analysis grid.
   - Classes: <27 transparent, 27–30, 30–35, 35–40, 40–45, ≥45°.
   - Use the standard avalanche palette: yellow `#ffe066` → orange `#ff922b` → red `#f03e3e` → purple `#ae3ec9` → black/grey `#343a40`.
@@ -132,7 +133,7 @@ These are the fixed MapLibre ids. Sources and layers share names where it's 1:1.
 
 | Group | Ids |
 |---|---|
-| Base | `bg`, `hillshade`, `contours` (+`contours-label`), `elev-ref-2100` |
+| Base | `bg`, `satellite` (raster, from `sat.json`; default off), `hillshade`, `contours` (+`contours-label`), `elev-ref-2100` |
 | Terrain overlays | `elev-tint`, `aspect`, `slope`, `quality` |
 | Basemap vectors | `lakes`, `creeks`, `glaciers` (+`glaciers-label`) |
 | ATES | `ates-zones`, `ates-paths`, `ates-decision`, `ates-boundary`, `ates-road` |
@@ -144,29 +145,30 @@ The terrain source is `dem` (raster-dem, encoding `terrarium`).
 
 **Default draw order** (bottom to top):
 1. `bg`
-2. `elev-tint`
-3. `hillshade`
-4. `aspect`
-5. `slope`
-6. `quality`
-7. `lakes`
-8. `creeks`
-9. `glaciers`
-10. `contours`
-11. `elev-ref-2100`
-12. `ates-zones`
-13. `ates-paths`
-14. `ates-boundary`
-15. `ates-road`
-16. `areas-fill`
-17. `areas-line`
-18. `routes-skin`
-19. `routes-descent`
-20. `route-highlight`
-21. `routes-label`
-22. `pois`
-23. `ates-decision`
-24. `zone-info`
+2. `satellite`
+3. `elev-tint`
+4. `hillshade`
+5. `aspect`
+6. `slope`
+7. `quality`
+8. `lakes`
+9. `creeks`
+10. `glaciers`
+11. `contours`
+12. `elev-ref-2100`
+13. `ates-zones`
+14. `ates-paths`
+15. `ates-boundary`
+16. `ates-road`
+17. `areas-fill`
+18. `areas-line`
+19. `routes-skin`
+20. `routes-descent`
+21. `route-highlight`
+22. `routes-label`
+23. `pois`
+24. `ates-decision`
+25. `zone-info`
 
 ## metrics
 These definitions are implemented identically in `web/js/terrain-sampler.js` and `tools/metrics.py` (WS4). Parity is tested with `tools/fixtures/metrics_fixture.json`: results must agree within 1 m and 0.5°.
