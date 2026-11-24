@@ -203,3 +203,12 @@ ACCEPTANCE: check_routes --seeds pass; r09 345/340, r10 204/200, r11 205/200, r1
 DECISIONS: NE ridge bench 2125 -> knoll -> ~2310 crest -> N summit 2433 (= r09 "false summit"); r10-r13 start progressively W/NW along the ridge, ski N/NE; shared cabin -> Griffin bench coords; descent_m from text; confidence r09/r14 medium, r10-r13 low
 ISSUES: skin gain to N summit ~490 m vs guide 360 on MRDEM; r10-r13 entry points guessed (if r13's peak is Mt Robert Smith, it moves ~600 m N); si4 may duplicate r14 terrain (cross-check); Enchanted Forest / Enterprise Pass return not drawn
 ```
+
+### WS8 z-giegerich + z-robert-smith (full)
+```
+CARD: WS8 geometry (z-giegerich + z-robert-smith) | SCOPE: full | STATUS: done
+FILES: content/seed/z-giegerich.json, content/seed/z-robert-smith.json, build/geometry/z-{giegerich,robert-smith}.md
+ACCEPTANCE: check_routes --seeds pass; r07 0%, r08 -22%, r15 -5%; r16 -55% / r17 -60% FLAG (gain_m 500 = climb from cabin; faces ~220/200 m); all 100% MRDEM
+DECISIONS: confidence r07/r15 medium, r08/r16/r17 low; r07 descent_m 340 (guide); r08 skin = r07 skin to saddle; r15-r17 share one skin; Giegerich top kept at BCGNIS/ATES summit (DEM 2434 m vs guide 2,249 m; 500 m gain fits ~2430)
+ISSUES: guide's ~1990 m traverse W of Enterprise Pass is 35-40 deg sidehill on MRDEM -> r07/r08 skins 18-20% of samples >35 deg (user check); r08 exit (valley -> Tanal Lake -> pass) only in notes
+```
