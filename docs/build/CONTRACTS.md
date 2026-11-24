@@ -88,6 +88,7 @@ Empty lines (fewer than 2 points) are skipped.
 
 ## tiles
 - **Location and scheme:** `web/tiles/<layer>/{z}/{x}/{y}.png`. XYZ (Web Mercator, Google scheme), 256 px, PNG.
+- **Zoom range (full, per `docs/decisions/zoom-limits.md`):** every tile layer z10–15; no z16 overlays. Map camera minZoom 11, maxZoom 17 (overzoom).
 - **Manifest:** `web/tiles/tiles.json`:
 
 ```jsonc
@@ -121,7 +122,7 @@ Empty lines (fewer than 2 points) are skipped.
 - **Slope angle bands:** Horn's 3×3 slope on the analysis grid.
   - Classes: <27 transparent, 27–30, 30–35, 35–40, 40–45, ≥45°.
   - Use the standard avalanche palette: yellow `#ffe066` → orange `#ff922b` → red `#f03e3e` → purple `#ae3ec9` → black/grey `#343a40`.
-- **Aspect:** 8 sectors centred on N, NE, …, NW, on a colour wheel. Slope <10° is transparent.
+- **Aspect:** 8 sectors centred on N, NE, …, NW, on a colour wheel with **S = red** (user request, 2026-11-23). Slope <10° is transparent. Palette: N `#1971c2`, NE `#12b886`, E `#82c91e`, SE `#fab005`, S `#e03131`, SW `#e64980`, W `#be4bdb`, NW `#7950f2`.
 - **Elev (contour shading):** 100 m hypsometric bands, ~1400–2900 m, valley green to alpine white.
 - **No-data in every overlay:** a hatched grey pattern (diagonal 45°, `#9e9e9e`, alpha 160). It must be distinct from transparent/low-angle, and the legends show both.
 - **Display only:** a reference line at **2,100 m**, labelled "2,100 m reference (not mapped treeline)".
@@ -243,3 +244,4 @@ These are ES modules under `web/js/`, with no build step. Each module's owner is
   - Highlight: 8 px, `#fff` at 0.9 alpha underneath the line.
   - `approx: true` routes: label suffix "≈".
 - **Legends:** a swatch and label for each class, always including "No data" (hatched) as distinct from "transparent = below range".
+- **On-screen legend** (user request, 2026-11-23): while `aspect` or `slope` is visible, a compact legend card stays on the map (not only inside the layers menu), one block per active layer, built from `tiles.json.legends`. Aspect is drawn as a small 8-sector compass rose. Desktop: bottom-left above the offline badge. Mobile (<768 px): a compact strip under the header, hidden while the bottom sheet is expanded. It must not cover the map controls or the scale bar.
