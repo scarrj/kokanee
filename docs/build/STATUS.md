@@ -19,7 +19,7 @@ The orchestrator maintains this log. Agent reports are appended unchanged (forma
 - **A.** DEM source and data downloads: **APPROVED by the user 2026-11-23**. Covers:
   - the recommendation in `docs/decisions/dem-source.md` (HRDEM 2017 window, MRDEM window)
   - the BC Freshwater Atlas lakes/streams/glaciers download.
-- **B.** Pilot review (PC + phone): **ready for the user** (fix loop closed 2026-11-23; check_all 8/8).
+- **B.** Pilot review (PC + phone): **APPROVED by the user 2026-11-23** ("Lets expand…"), with feedback: on-screen legend for aspect/slope; S aspect red; satellite layer wanted (source TBD). Phone performance numbers not yet given.
 - **C.** First push to `main` / Pages deploy, and the git identity: not yet.
 
 ## Open items for the user
@@ -129,4 +129,12 @@ QA defects 1-10 fixed and committed: WS1 residual map (patchy, no trend); WS3 x6
 Found by orchestrator in pane, fixed (WS7): verify() percent-encoding mismatch (fonts with spaces never "ready"); SW overwrote per-version manifest; new deploys never re-precached -> sw.js?v=<manifest version>. WS3: offline starts before map; style wait no longer resolves early
 Offline acceptance (pane, SW now registers): clean -> Offline ready; new version -> new cache, old deleted; one tile deleted -> 1 missing -> Retry -> ready; empty cache -> Retry rebuilds; server stopped -> reload renders terrain/routes/badge, z12-16.5 pans with 0 errors
 Still open: phone measurements (user); zoom-limit decision (drop z16 overlays?); closure extent; return Kokanee Lake -> cabin not drawn
+```
+
+### Phase 2 start, orchestrator 2026-11-23
+```
+User supplied lidar_data/Kokanee_DEM_* (0.75 arcsec, 0.5x0.5 deg, EPSG:2955 + WGS84 copies). Not lidar: CDEM-like. vs lidar on pilot overlap (30 m blocks, n=7969): RMSE 8.9 m, p95 18.5 m, slope RMSE 4.8 deg; MRDEM-30: 5.1 m, 10.2 m, 2.3 deg -> not used; git-ignored
+CONTRACTS: aspect palette S=red; on-screen legend (#ui); all tile layers z10-15 (no z16 overlays), camera z11-17
+Wave 1 launched: WS1 full (Sonnet high), WS2 full (Sonnet medium), WS3 on-screen legend (Sonnet medium). WS8 fan-out waits for WS1 merged_dem
+Open for user: satellite source; closure extent; pilot edits to export (if any); r34 skin MRDEM stretch; Kokanee Lake -> cabin return line; phone numbers
 ```
