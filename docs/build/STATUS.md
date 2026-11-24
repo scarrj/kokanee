@@ -221,3 +221,13 @@ ACCEPTANCE: check_routes --seeds pass; r35 2756->1965 m, 790 vs 800 (-1%), 4.8 k
 DECISIONS: r35 skin = r34 skin[0..31] verbatim, then least-cost SE up Kokanee Glacier to the Kokanee-Gray's saddle 490735/5509055 (2539 m, 220 m below the 2759 m summit as the guide says), descent W face to S end of Kokanee Lake (same end as r34); cliff bands re-routed on 2 m grid; confidence medium (descent 100% lidar, skin 62% MRDEM); hut info_point -117.192419,49.773045
 ISSUES: return Kokanee Lake -> cabin not drawn (as r34); skin max 54 deg = last ~15 m boot-pack per guide
 ```
+
+### Phase 2 status, orchestrator 2026-11-23
+```
+All 41 routes placed (40 lines; si6 is a summit list); cross-zone anchors agree (skins start <=4 m from cabin; Kokanee Pass si3 vs r23 11 m; si4/r14 same summit 4 m)
+routes.json assembled in REVIEW mode (--pilot: content_rev 0, seeds kept) pending the user's answer on pilot edits; final one-time assembly not yet run
+WS9 full: check_all 8/8; 41 route cards OK; edges clean; offline 100.25 MB precache 34 s in Chrome, delete/Retry OK; frame 13-14 ms desktop / 11-12 ms mobile (PC); r35 profile 138/94 ms
+Defects 13 fixed (mobile legend vs readout); 14 pane SW quirk (env); 15 low blank map 2 s after long jump (terrain decode); 16 hut panel empty list (intended)
+Note: WS9 used Claude in Chrome for the offline run (pane refused SW); user informed
+Open for user: full review on PC + phone; satellite source; pilot edits; closure extent; return lines; route checks listed in WS8 reports; Gate C (identity, public/private, tiles in git vs LFS)
+```
