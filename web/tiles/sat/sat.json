@@ -1,0 +1,16 @@
+{
+ "minzoom": 10,
+ "maxzoom": 14,
+ "bounds": [
+  -117.271113,
+  49.602764,
+  -117.076133,
+  49.823419
+ ],
+ "date": "2024-09-05",
+ "scenes": [
+  "S2B_11UMQ_20240905_0_L2A",
+  "S2B_11UMR_20240905_0_L2A"
+ ],
+ "attribution": "Contains modified Copernicus Sentinel data 2024"
+}
