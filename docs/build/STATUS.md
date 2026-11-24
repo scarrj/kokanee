@@ -194,3 +194,12 @@ ACCEPTANCE: check_routes --seeds: r18, r22-r28 OK; r19-r21 FLAG (169-287 m vs ga
 DECISIONS: Dijkstra least-slope/fall-line at 4 m; skins reuse r26 cabin -> confluence stem; r22 skin = r18; r19-r21 branch off r27 Griffin Ck -> Sapphire -> Glory Basin; Kokanee Pass = DEM saddle 2021 m; descent_m from text r22 480, r23 240, r24 160, r25 200, r27 210, r28 100; confidence medium r18/r22/r27, low others
 ISSUES: r19-r21 S->N order inferred ("at/near/well before the end of Glory Basin"); r28 (Andy's bowl) location a guess (Commission/Outlook creek mouths coincide in BCGNIS); r24-r26 tops within ~400 m on MRDEM-only ground
 ```
+
+### WS8 z-nansen (full)
+```
+CARD: WS8 geometry z-nansen | SCOPE: full | STATUS: done
+FILES: content/seed/z-nansen.json, build/geometry/z-nansen.md
+ACCEPTANCE: check_routes --seeds pass; r09 345/340, r10 204/200, r11 205/200, r12 273/280, r13 270/300, r14 488 vs gain 500; skins max 28 deg; 100% MRDEM
+DECISIONS: NE ridge bench 2125 -> knoll -> ~2310 crest -> N summit 2433 (= r09 "false summit"); r10-r13 start progressively W/NW along the ridge, ski N/NE; shared cabin -> Griffin bench coords; descent_m from text; confidence r09/r14 medium, r10-r13 low
+ISSUES: skin gain to N summit ~490 m vs guide 360 on MRDEM; r10-r13 entry points guessed (if r13's peak is Mt Robert Smith, it moves ~600 m N); si4 may duplicate r14 terrain (cross-check); Enchanted Forest / Enterprise Pass return not drawn
+```
