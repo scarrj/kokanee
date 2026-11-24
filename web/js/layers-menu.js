@@ -1,5 +1,5 @@
 // layers-menu.js [WS3] - one row per layer group: toggle, opacity slider, collapsible legend.
-import { GROUP_DEFS, setLayerVisible, setLayerOpacity, getLayerState, setExaggeration, getExaggeration, getMeta, getTiles } from './map.js';
+import { GROUP_DEFS, setLayerVisible, setLayerOpacity, getLayerState, setExaggeration, getExaggeration, getMeta, getTiles, getSat } from './map.js';
 
 const KEY = 'kokanee.layers.v1';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -26,6 +26,7 @@ function fromLegend(arr, defs) {
 function legendHTML(id) {
   const lg = (getTiles() && getTiles().legends) || {};
   switch (id) {
+    case 'satellite': return '<div class="muted">10 m imagery (Sentinel-2), one late-summer mosaic. Display only: not used for any metric. Hillshade is eased back while it is on.</div>';
     case 'elev': return fromLegend(lg.elev, [['1400 m (valley)', '#5aa469'], ['~2100 m', '#d9c27a'], ['2900 m (alpine)', '#ffffff']]) + NODATA;
     case 'aspect': return fromLegend(lg.aspect, DEF_ASPECT) + BELOW('Transparent: slope below 10° (flat)') + NODATA;
     case 'slope': return fromLegend(lg.slope, DEF_SLOPE) + BELOW('Transparent: below 27° (below range)') + NODATA;
@@ -113,6 +114,16 @@ export function refreshOnMapLegend() {
 
 function row(g, saved, child) {
   const st = saved[g.id] || {};
+  if (g.id === 'satellite') {
+    const sj = getSat();
+    g = { ...g, label: sj ? `Satellite (Sentinel-2, ${sj.date || 'date unknown'})` : 'Satellite (Sentinel-2): not available' };
+    if (!sj) {
+      const na = document.createElement('div');
+      na.className = 'lrow'; na.hidden = true; // layer absent: no toggle to offer
+      na.innerHTML = `<div class="lhead muted">${esc(g.label)}</div>`;
+      return na;
+    }
+  }
   const on = st.on ?? g.on, op = st.op ?? g.op ?? 1;
   const el = document.createElement('div');
   el.className = 'lrow' + (child ? ' child' : '');

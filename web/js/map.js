@@ -12,6 +12,7 @@ const CONTENT_SOURCES = ['routes-descent', 'routes-skin', 'zone-info', 'pois', '
 
 // Group definitions: used by layers-menu.js. `layers` = MapLibre layer ids driven by the group.
 export const GROUP_DEFS = [
+  { id: 'satellite', label: 'Satellite (Sentinel-2)', layers: ['satellite'], on: false, op: 1, legend: 'satellite' },
   { id: 'elev', label: 'Contour shading (elevation bands)', layers: ['elev-tint'], on: false, op: 0.7, legend: 'elev' },
   { id: 'aspect', label: 'Aspect', layers: ['aspect'], on: false, op: 0.7, legend: 'aspect' },
   { id: 'slope', label: 'Slope angle bands', layers: ['slope'], on: false, op: 0.75, legend: 'slope' },
@@ -51,6 +52,8 @@ let baseUrl = '';
 let exaggeration = 1.3;
 let atesData = EMPTY;
 let meta = { glacierSurvey: [] };
+let sat = null; // sat.json (null when the satellite tiles are absent)
+const SAT_HILLSHADE_FACTOR = 0.6; // hillshade is eased back while satellite is visible (saved slider values untouched)
 const flat = {}; // groupId -> {visible, opacity}
 const baseOpacity = {}; // layerId -> {prop: base}
 const parentOf = {};
@@ -166,7 +169,8 @@ export async function initMap(el, { tilesJson = null, base = null } = {}) {
   map.addControl(new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: true }, trackUserLocation: true, showAccuracyCircle: true }), 'top-right');
   map.addControl(new maplibregl.ScaleControl({ unit: 'metric', maxWidth: 140 }), 'bottom-right');
 
-  const [ates, basemap] = await Promise.all([fetchJSON(`${baseUrl}data/ates.geojson`), fetchJSON(`${baseUrl}data/basemap.geojson`)]);
+  const [ates, basemap, satJson] = await Promise.all([fetchJSON(`${baseUrl}data/ates.geojson`), fetchJSON(`${baseUrl}data/basemap.geojson`), fetchJSON(`${baseUrl}tiles/sat/sat.json`)]);
+  sat = satJson && typeof satJson === 'object' && Number.isFinite(satJson.maxzoom) ? satJson : null;
   atesData = ates || EMPTY;
   const basemapData = basemap || EMPTY;
   const dates = new Set();
@@ -205,6 +209,16 @@ export async function initMap(el, { tilesJson = null, base = null } = {}) {
 
   // ---- layers, bottom to top (CONTRACTS.md#layers default draw order)
   rememberOpacity({ id: 'bg', type: 'background', paint: {} });
+  if (sat) {
+    // display-only Sentinel-2 imagery (10 m); overzoomed above sat.maxzoom
+    map.addSource('satellite', {
+      type: 'raster', tiles: [`${baseUrl}tiles/sat/{z}/{x}/{y}.jpg`], tileSize: 256,
+      minzoom: sat.minzoom ?? 10, maxzoom: sat.maxzoom,
+      ...(Array.isArray(sat.bounds) ? { bounds: sat.bounds } : {}),
+      ...(sat.attribution ? { attribution: sat.attribution } : {}),
+    });
+    add({ id: 'satellite', type: 'raster', source: 'satellite', layout: { visibility: 'none' }, paint: { 'raster-opacity': 1, 'raster-resampling': 'linear', 'raster-fade-duration': 0 } });
+  }
   if (hasTiles) {
     addRasterOverlay('elev-tint', 'elev', 0.7, 'linear');
     add({ id: 'hillshade', type: 'hillshade', source: 'dem', paint: { 'hillshade-exaggeration': 0.5, 'hillshade-shadow-color': '#2b2b3a', 'hillshade-highlight-color': '#ffffff', 'hillshade-accent-color': '#44445a' } });
@@ -292,7 +306,8 @@ function applyGroup(id) {
   if (!g || !map) return;
   const par = parentOf[id] ? state[parentOf[id]] : null;
   const visible = state[id].visible && (par ? par.visible : true);
-  const op = state[id].opacity * (par ? par.opacity : 1);
+  let op = state[id].opacity * (par ? par.opacity : 1);
+  if (id === 'hillshade' && satVisible()) op *= SAT_HILLSHADE_FACTOR;
   for (const lid of g.layers) {
     if (!map.getLayer(lid)) continue;
     map.setLayoutProperty(lid, 'visibility', visible ? 'visible' : 'none');
@@ -305,10 +320,13 @@ function applyGroup(id) {
   for (const c of g.children || []) applyGroup(c.id);
 }
 
+function satVisible() { return !!(sat && state.satellite.visible); }
+
 export function setLayerVisible(groupId, bool) {
   if (!state[groupId]) return;
   state[groupId].visible = !!bool;
   applyGroup(groupId);
+  if (groupId === 'satellite') applyGroup('hillshade');
 }
 
 export function setLayerOpacity(groupId, v) {
@@ -316,6 +334,8 @@ export function setLayerOpacity(groupId, v) {
   state[groupId].opacity = Math.max(0, Math.min(1, +v));
   applyGroup(groupId);
 }
+
+export function getSat() { return sat; }
 
 export function getLayerState() {
   const out = {};
