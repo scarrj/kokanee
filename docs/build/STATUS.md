@@ -158,3 +158,12 @@ TILES MB: dem 77.63 (z15 56.14), slope 9.44, aspect 7.27, elev 1.65, quality 0.7
 DECISIONS: z10-15 all layers; aspect S=red; residuals lidar-MRDEM +0.78 m MAD 1.47 (n=37,904), HRDEM-MRDEM +0.98 MAD 1.52; lidar2018==hrdem2017; planar tilt <=0.07 m/km -> NO correction
 ISSUES: lidar-MRDEM median rises with elevation (-0.5 m at 1300 m -> +2.5 m at 2700 m; MRDEM clips summits): MRDEM-only park-core summits may read 1-2.5 m low. Tiles (97 MB) are committed to git: revisit (LFS or release asset) before Gate C
 ```
+
+### WS8 z-si (full)
+```
+CARD: WS8 geometry z-si | SCOPE: full | STATUS: done
+FILES: content/seed/z-si.json, build/geometry/z-si.md
+ACCEPTANCE: check_routes --seeds pass; si1 591/600 (-1%), si2 801/800, si3 584 (null; fits "s50" as 550), si4 262/250 (+5%), si5 484 (null); skins <1% >35 deg; 63-100% MRDEM
+DECISIONS: least-cost paths on 10 m resample; si3 ends at Kokanee Pass = DEM low point 486805/5511705 (BCGNIS point 870 m S on 46 deg slope, not used); S&I "Lemon Pass" = col by Sapphire Lakes; shared skins si5 -> si1 -> si2; confidence si1-3 medium, si4-6 low; info_point 487350/5511150
+ISSUES: si6 deliberately no line (list of ski summits); si4 one representative line (Giegerich alternative noted); si2 skin onto upper glacier S of Giant's Kneecap needs user check
+```
