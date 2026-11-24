@@ -20,7 +20,7 @@ The orchestrator maintains this log. Agent reports are appended unchanged (forma
   - the recommendation in `docs/decisions/dem-source.md` (HRDEM 2017 window, MRDEM window)
   - the BC Freshwater Atlas lakes/streams/glaciers download.
 - **B.** Pilot review (PC + phone): **APPROVED by the user 2026-11-23** ("Lets expand…"), with feedback: on-screen legend for aspect/slope; S aspect red; satellite layer wanted (source TBD). Phone performance numbers not yet given.
-- **C.** First push to `main` / Pages deploy, and the git identity: not yet.
+- **C.** First push to `main` / Pages deploy: **APPROVED by the user 2026-11-24** ("Yes, push and deploy"); identity scarrj noreply confirmed; repo public. Live at https://scarrj.github.io/kokanee/.
 
 ## Open items for the user
 - The closure polygon: what is its source or extent? Not supplied, so the pilot uses a labelled test polygon.
@@ -248,4 +248,13 @@ WS7 delta install (sw.js): unchanged files (path + sha256) copied from previous 
 README: edit -> export for publishing -> upload web/data/routes.json -> auto deploy; tiles stay in git (LFS rejected: 1 GB/month bandwidth vs ~100 MB per deploy)
 Untracked AGENTS.md (copy of CLAUDE.md, created 09:38 outside this session): left uncommitted pending user
 Gate C: awaiting user's go-ahead to push + enable Pages (source: GitHub Actions)
+```
+
+### Gate C deploy, orchestrator 2026-11-24
+```
+Pages enabled (build_type workflow) via gh api; main pushed (53 commits, scarrj noreply); deploy run OK
+Live check 1: map, routes, tiles, sat, fonts all 200; offline install FAILED: GitHub Pages HTTP 429 on the 5,051-request precache (20 concurrent) -> install aborted at 441 files, no SW
+Fix (WS7): 43 .kpack packs (<=8 MiB, built in CI, git-ignored) + retry/back-off (<=4 in flight, Retry-After); harness under 10-35% 429s: 79 requests, complete; delta = 2 requests; check_all skips packs/ (orchestrator one-liner)
+Live check 2 (clean state, pane over https): Offline ready, rev 1, DEM 2026-11-full, 102 MB; verify full: 0 missing, 5,053 cache entries, SW controlling. Not run live: server-stopped reload (cannot stop Pages; passed locally) and a live delta publish (no real edit to publish yet)
+Node 20 deprecation warning on the Pages actions (non-blocking)
 ```
