@@ -185,3 +185,12 @@ ACCEPTANCE: check_routes --seeds pass; r29 -2%, r30 -1%, r31 -1%, r32 -1%, r33 0
 DECISIONS: least-cost paths (10 m resample; native 2 m for Squat to Pee top); Field of Dreams starts at ATES "Smugglers Ridge" (~2250 m); Pyramid = nose of Kitchener N ridge ~487780/5511920 (~2475 m); r31-r33 full lines to Keen Lake; shared cabin -> knob -> ridge skin; info_point 487450/5512450
 ISSUES: guide says Pyramid is SW of cabin, it is SE (~130 deg), noted in r29; Keen Lake not resolved in MRDEM, BCGNIS point used
 ```
+
+### WS8 z-john-carter (full)
+```
+CARD: WS8 z-john-carter | SCOPE: full | STATUS: done
+FILES: content/seed/z-john-carter.json (r18-r25, r27, r28; r26 byte-equal), build/geometry/z-john-carter.md
+ACCEPTANCE: check_routes --seeds: r18, r22-r28 OK; r19-r21 FLAG (169-287 m vs gain_m 660 = cabin round trip; W face is only that tall); every descent loses elevation
+DECISIONS: Dijkstra least-slope/fall-line at 4 m; skins reuse r26 cabin -> confluence stem; r22 skin = r18; r19-r21 branch off r27 Griffin Ck -> Sapphire -> Glory Basin; Kokanee Pass = DEM saddle 2021 m; descent_m from text r22 480, r23 240, r24 160, r25 200, r27 210, r28 100; confidence medium r18/r22/r27, low others
+ISSUES: r19-r21 S->N order inferred ("at/near/well before the end of Glory Basin"); r28 (Andy's bowl) location a guess (Commission/Outlook creek mouths coincide in BCGNIS); r24-r26 tops within ~400 m on MRDEM-only ground
+```
