@@ -27,8 +27,8 @@ R = 6378137.0
 ORIGIN = math.pi * R  # 20037508.342789244
 TS = 256
 ANALYSIS_ZOOM = 15
-ZOOMS = {"pilot": {"dem": range(10, 16), "overlay": range(10, 17)},
-         "full": {"dem": range(10, 16), "overlay": range(10, 17)}}
+ZOOMS = {"pilot": {"dem": range(10, 16), "overlay": range(10, 16)},
+         "full": {"dem": range(10, 16), "overlay": range(10, 16)}}
 
 HATCH_RGB = (0x9e, 0x9e, 0x9e)
 HATCH_ALPHA = 160
@@ -36,7 +36,7 @@ SLOPE_ALPHA, ASPECT_ALPHA, ELEV_ALPHA = 150, 130, 110
 
 SLOPE_BANDS = [(27, 30, "#ffe066"), (30, 35, "#ff922b"), (35, 40, "#f03e3e"), (40, 45, "#ae3ec9"), (45, 90, "#343a40")]
 ASPECT_SECTORS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
-ASPECT_COLORS = ["#4263eb", "#15aabf", "#40c057", "#c0d62b", "#f59f00", "#f03e3e", "#cc5de8", "#7048e8"]
+ASPECT_COLORS = ["#1971c2", "#12b886", "#82c91e", "#fab005", "#e03131", "#e64980", "#be4bdb", "#7950f2"]
 QUALITY = [  # code, label, colour, alpha
     (0, "missing", "#9e9e9e", 200),
     (1, "LidarBC 2018 (1 m)", "#2b8a3e", 90),

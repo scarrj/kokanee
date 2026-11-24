@@ -1,10 +1,10 @@
 {
- "dem_version": "2026-11-pilot",
+ "dem_version": "2026-11-full",
  "bounds": [
-  -117.215324,
-  49.737798,
-  -117.131857,
-  49.782894
+  -117.271113,
+  49.602764,
+  -117.076133,
+  49.823419
  ],
  "layers": {
   "dem": {
@@ -14,7 +14,7 @@
   },
   "quality": {
    "minzoom": 10,
-   "maxzoom": 16,
+   "maxzoom": 15,
    "encoding": "rgba"
   },
   "qcode": {
@@ -24,17 +24,17 @@
   },
   "slope": {
    "minzoom": 10,
-   "maxzoom": 16,
+   "maxzoom": 15,
    "encoding": "rgba"
   },
   "aspect": {
    "minzoom": 10,
-   "maxzoom": 16,
+   "maxzoom": 15,
    "encoding": "rgba"
   },
   "elev": {
    "minzoom": 10,
-   "maxzoom": 16,
+   "maxzoom": 15,
    "encoding": "rgba"
   }
  },
@@ -75,35 +75,35 @@
   "aspect": [
    {
     "sector": "N",
-    "color": "#4263eb"
+    "color": "#1971c2"
    },
    {
     "sector": "NE",
-    "color": "#15aabf"
+    "color": "#12b886"
    },
    {
     "sector": "E",
-    "color": "#40c057"
+    "color": "#82c91e"
    },
    {
     "sector": "SE",
-    "color": "#c0d62b"
+    "color": "#fab005"
    },
    {
     "sector": "S",
-    "color": "#f59f00"
+    "color": "#e03131"
    },
    {
     "sector": "SW",
-    "color": "#f03e3e"
+    "color": "#e64980"
    },
    {
     "sector": "W",
-    "color": "#cc5de8"
+    "color": "#be4bdb"
    },
    {
     "sector": "NW",
-    "color": "#7048e8"
+    "color": "#7950f2"
    }
   ],
   "elev": [
@@ -271,10 +271,10 @@
   "crs": "EPSG:2955",
   "res_m": 2.0,
   "bounds_2955": [
-   484500,
-   5509500,
-   490500,
-   5514500
+   480500,
+   5494500,
+   494500,
+   5519000
   ],
   "feather_m": 150,
   "tile_slope": "Horn 3x3 on the Web-Mercator grid of the same zoom; ground cell = mercator px * cos(lat)"
