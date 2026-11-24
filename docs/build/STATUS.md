@@ -167,3 +167,12 @@ ACCEPTANCE: check_routes --seeds pass; si1 591/600 (-1%), si2 801/800, si3 584 (
 DECISIONS: least-cost paths on 10 m resample; si3 ends at Kokanee Pass = DEM low point 486805/5511705 (BCGNIS point 870 m S on 46 deg slope, not used); S&I "Lemon Pass" = col by Sapphire Lakes; shared skins si5 -> si1 -> si2; confidence si1-3 medium, si4-6 low; info_point 487350/5511150
 ISSUES: si6 deliberately no line (list of ski summits); si4 one representative line (Giegerich alternative noted); si2 skin onto upper glacier S of Giant's Kneecap needs user check
 ```
+
+### WS8 z-tanal (full)
+```
+CARD: WS8 geometry z-tanal | SCOPE: full | STATUS: done
+FILES: content/seed/z-tanal.json, build/geometry/z-tanal.md
+ACCEPTANCE: check_routes --seeds pass; r01 -2%, r02 +2%, r05 -18%, r06 +2%; r03 +88% / r04 +38% FLAG (gain_m is from the cabin; descents end at Tanal Lake ~175 m below the cabin); all 100% MRDEM-30
+DECISIONS: Tanal Peak = 2259 m DEM summit -117.198731,49.784409 (2337 m point N rejected); S saddle 2091 m; W ridge 2100 m point -117.203525,49.784743; Tanal Lake ~1789 m; r01-r04 share one skin cabin -> Happy Valley -> saddle; r06 skin = r05 skin; r06 descent_m 140 (guide text); confidence r03-r05 medium, r01/r02/r06 low; info_point -117.19518,49.782355
+ISSUES: return legs (r01-r04 back to Enterprise Pass, r06 exit) only in notes (one skin line per route)
+```
