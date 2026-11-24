@@ -176,3 +176,12 @@ ACCEPTANCE: check_routes --seeds pass; r01 -2%, r02 +2%, r05 -18%, r06 +2%; r03 
 DECISIONS: Tanal Peak = 2259 m DEM summit -117.198731,49.784409 (2337 m point N rejected); S saddle 2091 m; W ridge 2100 m point -117.203525,49.784743; Tanal Lake ~1789 m; r01-r04 share one skin cabin -> Happy Valley -> saddle; r06 skin = r05 skin; r06 descent_m 140 (guide text); confidence r03-r05 medium, r01/r02/r06 low; info_point -117.19518,49.782355
 ISSUES: return legs (r01-r04 back to Enterprise Pass, r06 exit) only in notes (one skin line per route)
 ```
+
+### WS8 z-pyramid (full)
+```
+CARD: WS8 z-pyramid | SCOPE: full | STATUS: done
+FILES: content/seed/z-pyramid.json, build/geometry/z-pyramid.md
+ACCEPTANCE: check_routes --seeds pass; r29 -2%, r30 -1%, r31 -1%, r32 -1%, r33 0%; MRDEM r29-31 100%, r32 85%, r33 71% (+27% blend); confidence r29 medium, r30-33 low
+DECISIONS: least-cost paths (10 m resample; native 2 m for Squat to Pee top); Field of Dreams starts at ATES "Smugglers Ridge" (~2250 m); Pyramid = nose of Kitchener N ridge ~487780/5511920 (~2475 m); r31-r33 full lines to Keen Lake; shared cabin -> knob -> ridge skin; info_point 487450/5512450
+ISSUES: guide says Pyramid is SW of cabin, it is SE (~130 deg), noted in r29; Keen Lake not resolved in MRDEM, BCGNIS point used
+```
