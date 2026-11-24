@@ -10,16 +10,60 @@ async function broadcast(msg) {
   cs.forEach((c) => c.postMessage(msg));
 }
 
+async function sha256Hex(buf) {
+  const d = new Uint8Array(await crypto.subtle.digest('SHA-256', buf));
+  return Array.from(d, (x) => x.toString(16).padStart(2, '0')).join('');
+}
+
+/* Path -> sha256 of the newest COMPLETE older cache, via the manifest stored in that cache. */
+async function previousCache(version) {
+  for (const c of await completeCaches()) {
+    if (c.name === PREFIX + version) continue;
+    try {
+      const cache = await caches.open(c.name);
+      const mr = await cache.match('asset-manifest.json');
+      if (!mr) continue;
+      const files = (await mr.json()).files || [];
+      return { cache, sha: new Map(files.map((f) => [f.path, f.sha256])) };
+    } catch { /* unreadable: try the next one */ }
+  }
+  return null;
+}
+
+/* Copy f from the previous cache when its sha256 is unchanged. Returns true if copied. */
+async function copyFromPrevious(prev, cache, f) {
+  if (!prev || !f.sha256 || prev.sha.get(f.path) !== f.sha256) return false;
+  const r = await prev.cache.match(f.path);
+  if (!r) return false;
+  // Network-first files (routes.json) can be newer than the old manifest says: hash the real bytes.
+  if (NETWORK_FIRST.has(f.path)) {
+    if ((await sha256Hex(await r.clone().arrayBuffer())) !== f.sha256) return false;
+  }
+  await cache.put(f.path, r);
+  return true;
+}
+
 async function precache(version, manifest) {
   const cache = await caches.open(PREFIX + version);
   const files = manifest.files;
-  let done = 0;
+  let done = 0, copied = 0;
   const total = files.length;
+  const prev = await previousCache(version);
   const todo = [];
   for (const f of files) if (!(await cache.match(f.path))) todo.push(f); else done++;
   await broadcast({ type: 'precache-progress', version, done, total });
-  for (let i = 0; i < todo.length; i += BATCH) {
-    await Promise.all(todo.slice(i, i + BATCH).map(async (f) => {
+  const fetchList = [];
+  // Unchanged files are copied cache-to-cache (no network); only new or changed files are fetched.
+  for (let i = 0; i < todo.length; i += BATCH * 2) {
+    await Promise.all(todo.slice(i, i + BATCH * 2).map(async (f) => {
+      let ok = false;
+      try { ok = await copyFromPrevious(prev, cache, f); } catch { ok = false; }
+      if (ok) { done++; copied++; } else fetchList.push(f);
+    }));
+    if (prev) await broadcast({ type: 'precache-progress', version, done, total });
+  }
+  for (let i = 0; i < fetchList.length; i += BATCH) {
+    await Promise.all(fetchList.slice(i, i + BATCH).map(async (f) => {
       const r = await fetch(f.path, { cache: 'reload' });
       if (!r.ok) throw new Error('precache ' + f.path + ' ' + r.status);
       await cache.put(f.path, r);
@@ -29,7 +73,7 @@ async function precache(version, manifest) {
   }
   await cache.put('asset-manifest.json', new Response(JSON.stringify(manifest), { headers: { 'content-type': 'application/json' } }));
   await cache.put(MARKER, new Response(String(Date.now())));
-  await broadcast({ type: 'precache-done', version, done, total });
+  await broadcast({ type: 'precache-done', version, done, total, copied, fetched: fetchList.length });
 }
 
 self.addEventListener('install', (e) => {
