@@ -1,9 +1,8 @@
 {
   "schema_version": 1,
-  "content_rev": 0,
-  "published_at": "2026-11-24T02:47:13Z",
+  "content_rev": 1,
+  "published_at": "2026-11-24T21:30:53Z",
   "dem_version": "2026-11-full",
-  "pilot": true,
   "zones": [
     {
       "id": "z-giegerich",
@@ -10762,39 +10761,5 @@
       "description": "Cabin heli-pad, just NW of Kokanee Glacier Cabin (position approximate)."
     }
   ],
-  "areas": [
-    {
-      "id": "a-test-closure",
-      "name": "TEST closure (replace)",
-      "kind": "closure",
-      "polygon": [
-        [
-          [
-            -117.190976,
-            49.772918
-          ],
-          [
-            -117.187226,
-            49.772924
-          ],
-          [
-            -117.187235,
-            49.775173
-          ],
-          [
-            -117.190985,
-            49.775167
-          ],
-          [
-            -117.190976,
-            49.772918
-          ]
-        ]
-      ],
-      "description": "Test polygon for the pilot only, NE of the cabin and clear of the routes. Not a real closure: replace with the actual extent.",
-      "source": "test",
-      "valid_from": null,
-      "valid_to": null
-    }
-  ]
+  "areas": []
 }

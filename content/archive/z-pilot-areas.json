@@ -1,0 +1,17 @@
+{
+  "zone": null,
+  "routes": [],
+  "pois": [
+    {
+      "id": "helipad",
+      "name": "Heli-pad",
+      "type": "helipad",
+      "coord": [
+        -117.195278,
+        49.772192
+      ],
+      "description": "Cabin heli-pad, just NW of Kokanee Glacier Cabin (position approximate)."
+    }
+  ],
+  "areas": []
+}
