@@ -8,7 +8,7 @@ function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } ca
 function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch { /* storage unavailable */ } }
 
 const DEF_SLOPE = [['27–30°', '#ffe066'], ['30–35°', '#ff922b'], ['35–40°', '#f03e3e'], ['40–45°', '#ae3ec9'], ['≥45°', '#343a40']];
-const DEF_ASPECT = [['N', '#4dabf7'], ['NE', '#38d9a9'], ['E', '#94d82d'], ['SE', '#ffd43b'], ['S', '#ff922b'], ['SW', '#f03e3e'], ['W', '#cc5de8'], ['NW', '#7950f2']];
+const DEF_ASPECT = [['N', '#1971c2'], ['NE', '#12b886'], ['E', '#82c91e'], ['SE', '#fab005'], ['S', '#e03131'], ['SW', '#e64980'], ['W', '#be4bdb'], ['NW', '#7950f2']];
 const DEF_QUALITY = [['No data', '#9e9e9e', true], ['LidarBC 2018 (1 m)', '#2b8a3e'], ['HRDEM lidar 2017 (1 m)', '#74b816'], ['MRDEM-30 fallback (30 m, smoothed)', '#e8590c'], ['Blend zone', '#f08c00']];
 
 const sw = (color, cls = '') => `<span class="sw ${cls}" style="${color ? `background:${color}` : ''}"></span>`;
@@ -47,6 +47,61 @@ function legendHTML(id) {
   }
 }
 
+// ---- on-screen legend (aspect / slope) ----
+const LKEY = 'kokanee.legend.collapsed';
+const SECTORS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+let legendEl = null;
+function legendCollapsed() { try { return localStorage.getItem(LKEY) === '1'; } catch { return false; } }
+function setLegendCollapsed(v) { try { localStorage.setItem(LKEY, v ? '1' : '0'); } catch { /* ignore */ } }
+
+function roseSVG() {
+  const lg = getTiles()?.legends?.aspect;
+  const cols = {};
+  for (const [l, c] of DEF_ASPECT) cols[l] = c;
+  if (Array.isArray(lg)) for (const e of lg) if (e.sector && e.color) cols[e.sector] = e.color;
+  const R = 40, C = 44, pt = (a, r) => [(C + r * Math.sin(a * Math.PI / 180)).toFixed(1), (C - r * Math.cos(a * Math.PI / 180)).toFixed(1)];
+  let paths = '';
+  SECTORS.forEach((n, i) => {
+    const a0 = i * 45 - 22.5, a1 = i * 45 + 22.5, p0 = pt(a0, R), p1 = pt(a1, R);
+    paths += `<path d="M${C} ${C}L${p0}A${R} ${R} 0 0 1 ${p1}Z" fill="${esc(cols[n])}" stroke="#fff" stroke-width="1"/>`;
+  });
+  const lab = (t, x, y) => `<text x="${x}" y="${y}" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">${t}</text>`;
+  return `<svg class="rose" viewBox="0 0 88 88" width="84" height="84" role="img" aria-label="Aspect compass: N ${cols.N}, S ${cols.S}">${paths}${lab('N', 44, 7)}${lab('E', 83, 47)}${lab('S', 44, 87)}${lab('W', 5, 47)}</svg>`;
+}
+
+function slopeRow() {
+  const lg = getTiles()?.legends?.slope;
+  const items = Array.isArray(lg) && lg.length ? lg.filter((e) => e.code !== 0).map((e) => [entryLabel(e), e.color]) : DEF_SLOPE;
+  return `<div class="ol-slope">${items.map(([l, c]) => `<span class="ol-s"><span class="sw" style="background:${esc(c)}"></span><span>${esc(l)}</span></span>`).join('')}</div>`;
+}
+
+export function refreshOnMapLegend() {
+  if (!legendEl) {
+    legendEl = document.createElement('div');
+    legendEl.id = 'onmap-legend';
+    document.body.appendChild(legendEl);
+    legendEl.addEventListener('click', (e) => {
+      if (!e.target.closest('.ol-toggle')) return;
+      setLegendCollapsed(!legendCollapsed()); refreshOnMapLegend();
+    });
+  }
+  const ls = getLayerState();
+  const vis = (id) => !!(ls && ls[id] && ls[id].visible);
+  const asp = vis('aspect'), slo = vis('slope');
+  legendEl.hidden = !(asp || slo);
+  if (legendEl.hidden) return;
+  const col = legendCollapsed();
+  legendEl.classList.toggle('collapsed', col);
+  const names = [asp && 'Aspect', slo && 'Slope'].filter(Boolean).join(' + ');
+  let body = '';
+  if (!col) {
+    if (asp) body += `<div class="ol-blk"><div class="ol-t">Aspect (slope faces)</div>${roseSVG()}<div class="muted ol-n">Clear: under 10° (flat)</div></div>`;
+    if (slo) body += `<div class="ol-blk"><div class="ol-t">Slope angle</div>${slopeRow()}<div class="muted ol-n">Clear: under 27°</div></div>`;
+    body += `<div class="ol-blk ol-nd"><span class="sw hatch"></span><span>No data</span></div>`;
+  }
+  legendEl.innerHTML = `<button class="ol-toggle" aria-expanded="${!col}" aria-label="${col ? 'Show' : 'Hide'} legend: ${names}"><span>${names} legend</span><span class="ol-chev" aria-hidden="true">${col ? '&#9650;' : '&#9660;'}</span></button><div class="ol-body">${body}</div>`;
+}
+
 function row(g, saved, child) {
   const st = saved[g.id] || {};
   const on = st.on ?? g.on, op = st.op ?? g.op ?? 1;
@@ -57,7 +112,7 @@ function row(g, saved, child) {
     <input type="range" min="0" max="1" step="0.05" value="${op}" aria-label="${esc(g.label)} opacity">${legend ? `<div class="legend" hidden>${legend}</div>` : ''}`;
   const cb = el.querySelector('input[type=checkbox]'), rg = el.querySelector('input[type=range]');
   const persist = () => { saved[g.id] = { on: cb.checked, op: +rg.value }; save(saved); };
-  cb.addEventListener('change', () => { setLayerVisible(g.id, cb.checked); persist(); });
+  cb.addEventListener('change', () => { setLayerVisible(g.id, cb.checked); persist(); refreshOnMapLegend(); });
   rg.addEventListener('input', () => { setLayerOpacity(g.id, +rg.value); persist(); });
   const btn = el.querySelector('.lg-btn');
   if (btn) btn.addEventListener('click', () => {
@@ -86,5 +141,6 @@ export function initLayersMenu(container) {
   rs.className = 'btn'; rs.style.margin = '12px 0'; rs.textContent = 'Reset layers to defaults';
   rs.addEventListener('click', () => { try { localStorage.removeItem(KEY); } catch { /* ignore */ } initLayersMenu(container); });
   container.appendChild(rs);
+  refreshOnMapLegend();
   return { getLayerState };
 }
