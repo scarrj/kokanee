@@ -91,7 +91,7 @@ body.panel-open .maplibregl-ctrl-bottom-right { right: var(--panel-w); }
   body.panel-open #offline-badge { bottom: calc(30vh + 8px) !important; }
   body.panel-open:has(#panel[data-state=expanded]) #offline-badge, body:has(#layers:not([hidden])) #offline-badge { display: none; }
   .maplibregl-ctrl-group button { width: var(--tap); height: var(--tap); }
-  #readout { top: calc(var(--bar) + 6px); }
+  #readout { top: calc(var(--bar) + 6px + var(--lg-off, 0px)); }
   #bar .title { font-size: 15px; }
   .tbtn { padding: 0 8px; }
 }

@@ -50,7 +50,7 @@ function legendHTML(id) {
 // ---- on-screen legend (aspect / slope) ----
 const LKEY = 'kokanee.legend.collapsed';
 const SECTORS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-let legendEl = null;
+let legendEl = null, legendSync = null;
 function legendCollapsed() { try { return localStorage.getItem(LKEY) === '1'; } catch { return false; } }
 function setLegendCollapsed(v) { try { localStorage.setItem(LKEY, v ? '1' : '0'); } catch { /* ignore */ } }
 
@@ -80,6 +80,14 @@ export function refreshOnMapLegend() {
     legendEl = document.createElement('div');
     legendEl.id = 'onmap-legend';
     document.body.appendChild(legendEl);
+    // mobile: the tap readout stacks below the legend strip (CSS var --lg-off)
+    const sync = () => {
+      const off = !legendEl.hidden && getComputedStyle(legendEl).display !== 'none' && matchMedia('(max-width:767px)').matches ? Math.round(legendEl.getBoundingClientRect().height) + 6 : 0;
+      document.body.style.setProperty('--lg-off', off + 'px');
+    };
+    legendSync = sync;
+    if (window.ResizeObserver) new ResizeObserver(sync).observe(legendEl);
+    window.addEventListener('resize', sync);
     legendEl.addEventListener('click', (e) => {
       if (!e.target.closest('.ol-toggle')) return;
       setLegendCollapsed(!legendCollapsed()); refreshOnMapLegend();
@@ -89,7 +97,7 @@ export function refreshOnMapLegend() {
   const vis = (id) => !!(ls && ls[id] && ls[id].visible);
   const asp = vis('aspect'), slo = vis('slope');
   legendEl.hidden = !(asp || slo);
-  if (legendEl.hidden) return;
+  if (legendEl.hidden) { legendSync(); return; }
   const col = legendCollapsed();
   legendEl.classList.toggle('collapsed', col);
   const names = [asp && 'Aspect', slo && 'Slope'].filter(Boolean).join(' + ');
@@ -100,6 +108,7 @@ export function refreshOnMapLegend() {
     body += `<div class="ol-blk ol-nd"><span class="sw hatch"></span><span>No data</span></div>`;
   }
   legendEl.innerHTML = `<button class="ol-toggle" aria-expanded="${!col}" aria-label="${col ? 'Show' : 'Hide'} legend: ${names}"><span>${names} legend</span><span class="ol-chev" aria-hidden="true">${col ? '&#9650;' : '&#9660;'}</span></button><div class="ol-body">${body}</div>`;
+  legendSync();
 }
 
 function row(g, saved, child) {
