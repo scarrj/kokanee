@@ -212,3 +212,12 @@ ACCEPTANCE: check_routes --seeds pass; r07 0%, r08 -22%, r15 -5%; r16 -55% / r17
 DECISIONS: confidence r07/r15 medium, r08/r16/r17 low; r07 descent_m 340 (guide); r08 skin = r07 skin to saddle; r15-r17 share one skin; Giegerich top kept at BCGNIS/ATES summit (DEM 2434 m vs guide 2,249 m; 500 m gain fits ~2430)
 ISSUES: guide's ~1990 m traverse W of Enterprise Pass is 35-40 deg sidehill on MRDEM -> r07/r08 skins 18-20% of samples >35 deg (user check); r08 exit (valley -> Tanal Lake -> pass) only in notes
 ```
+
+### WS8 z-longer-tours r35 + z-hut (full)
+```
+CARD: WS8 geometry z-longer-tours | SCOPE: full | STATUS: done
+FILES: content/seed/z-longer-tours.json (r35; r34 byte-identical), content/seed/z-hut.json (info_point), build/geometry/z-longer-tours.md
+ACCEPTANCE: check_routes --seeds pass; r35 2756->1965 m, 790 vs 800 (-1%), 4.8 km / 55 vertices, longest >45 deg 10 m (summit); skin +1173 m / 9.1 km
+DECISIONS: r35 skin = r34 skin[0..31] verbatim, then least-cost SE up Kokanee Glacier to the Kokanee-Gray's saddle 490735/5509055 (2539 m, 220 m below the 2759 m summit as the guide says), descent W face to S end of Kokanee Lake (same end as r34); cliff bands re-routed on 2 m grid; confidence medium (descent 100% lidar, skin 62% MRDEM); hut info_point -117.192419,49.773045
+ISSUES: return Kokanee Lake -> cabin not drawn (as r34); skin max 54 deg = last ~15 m boot-pack per guide
+```
