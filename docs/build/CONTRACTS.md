@@ -217,6 +217,7 @@ These are ES modules under `web/js/`, with no build step. Each module's owner is
   - `on('change', cb)`
 - `editor.js` [WS6]: `enable(map, store)`, `disable()`, `isEnabled()`
 - `offline.js` [WS7]: `initOffline(ui)`, `verify() → {ready, missing, bytes, persisted}`, `on('status', cb)`
+- **Offline packs** [WS7] (added 2026-11-24 after GitHub Pages returned HTTP 429 to a 5,051-request precache): at build time (`make_asset_manifest.py`, run locally and in `pages.yml`), the tiles are bundled into `web/packs/*.kpack` files of at most ~8 MB each, grouped by layer and zoom. The packs are generated output and git-ignored. Format: 4-byte little-endian header length, a UTF-8 JSON header `{files:[{path,offset,bytes,sha256,type}]}`, then the concatenated bytes. `asset-manifest.json` keeps the per-file list (used by `verify()`) and adds `packs:[{path,bytes,sha256,files:[paths]}]`. The SW fetches each pack (or copies its files from the previous complete cache when all their sha256 match), slices it, and `cache.put`s every file under its own path with the right content-type. Files not in a pack are fetched individually. Every fetch retries 429/5xx/network errors with exponential back-off (honouring Retry-After), at a concurrency of 4 or less. Tiles stay individually served for online use.
 - `app.js` [WS3]: the bootstrap. It loads `tiles.json` and `routes.json` through `store.load()` and wires the modules together.
 
 ## ui
