@@ -24,6 +24,19 @@ jobs:
           python-version: "3.12"
       - name: Build asset manifest (stdlib only)
         run: python tools/make_asset_manifest.py web
+      # web/packs/*.kpack are generated (git-ignored); the Pages artifact must contain them or the
+      # service worker would fall back to thousands of per-tile requests (HTTP 429 on GitHub Pages).
+      - name: Check offline packs are in web/
+        run: |
+          n=$(ls web/packs/*.kpack | wc -l)
+          echo "$n packs, $(du -sh web/packs | cut -f1)"
+          test "$n" -gt 0
+          python - <<'PY'
+          import json, pathlib
+          m = json.load(open("web/asset-manifest.json"))
+          missing = [p["path"] for p in m["packs"] if not pathlib.Path("web", p["path"]).is_file()]
+          assert m["packs"] and not missing, missing
+          PY
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

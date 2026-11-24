@@ -14,6 +14,27 @@ const armWatchdog = () => {
 };
 const emit = (s) => { if (s.state !== 'downloading') clearTimeout(watchdog); last = s; render(s); (listeners.status || []).forEach((cb) => { try { cb(s); } catch (e) { console.error(e); } }); };
 
+// Fetch a file, backing off on 429/5xx/network errors (GitHub Pages rate-limits bursts). Returns an ok Response or null.
+async function fetchBackoff(path, tries = 6) {
+  for (let n = 0; n < tries; n++) {
+    let wait = 0;
+    try {
+      const r = await fetch(path, { cache: 'reload' });
+      if (r.ok) return r;
+      if (r.status !== 429 && r.status < 500) return null;
+      wait = (Number(r.headers.get('retry-after')) || 0) * 1000;
+    } catch { /* network error: retry */ }
+    await new Promise((res) => setTimeout(res, Math.max(wait, Math.min(15000, 400 * 2 ** n))));
+  }
+  return null;
+}
+
+// Run fn over items with at most 4 in flight.
+async function pool4(items, fn) {
+  let i = 0;
+  await Promise.all(Array.from({ length: Math.min(4, items.length) }, async () => { while (i < items.length) await fn(items[i++]); }));
+}
+
 const mb = (n) => (n / 1048576).toFixed(n > 1e8 ? 0 : 1) + ' MB';
 
 async function findCache() {
@@ -131,20 +152,20 @@ export async function retry() {
       v.manifest = m;
       v.missing = m.files.map((f) => f.path);
       let n = 0;
-      for (const f of m.files) {
-        try { const r = await fetch(f.path, { cache: 'reload' }); if (r.ok) await cache.put(f.path, r); } catch { /* offline */ }
+      await pool4(m.files, async (f) => {
+        try { const r = await fetchBackoff(f.path); if (r) await cache.put(f.path, r); } catch { /* offline */ }
         if (++n % 20 === 0) emit({ state: 'downloading', pct: Math.round((n / m.files.length) * 100), missing: [] });
-      }
+      });
       await cache.put('asset-manifest.json', new Response(JSON.stringify(m), { headers: { 'content-type': 'application/json' } }));
       await cache.put('__complete', new Response(String(Date.now())));
     } else if (v.manifest) {
       const all = new Set(v.missing.filter((p) => !p.startsWith('decode:') && !p.startsWith('(')));
       if (v.missing.some((p) => p.startsWith('decode:'))) v.manifest.files.filter((f) => /^tiles\/.+\.png$/.test(f.path)).forEach((f) => all.add(f.path));
       let n = 0;
-      for (const p of all) {
-        try { const r = await fetch(p, { cache: 'reload' }); if (r.ok) await cache.put(p, r); } catch { /* offline */ }
+      await pool4([...all], async (p) => {
+        try { const r = await fetchBackoff(p); if (r) await cache.put(p, r); } catch { /* offline */ }
         emit({ state: 'downloading', pct: Math.round((++n / all.size) * 100), missing: [] });
-      }
+      });
     } else (await navigator.serviceWorker?.getRegistration())?.update();
   } catch (e) { console.error(e); }
   return run({ full: true });

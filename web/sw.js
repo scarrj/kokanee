@@ -1,7 +1,14 @@
-/* Kokanee Topo service worker. Relative paths only (works under /kokanee/). */
+/* Kokanee Topo service worker. Relative paths only (works under /kokanee/).
+   Install pulls tiles through ~8 MB packs (packs/*.kpack, see CONTRACTS "Offline packs") and everything
+   else file by file. Every request retries 429/5xx/network errors with back-off; concurrency is <= 4
+   because GitHub Pages answers a burst of thousands of requests with HTTP 429. */
 const PREFIX = 'kokanee-';
 const MARKER = '__complete';
-const BATCH = 20;
+const CONCURRENCY = 4;
+const MAX_ATTEMPTS = 10;
+const BACKOFF_BASE_MS = 400;
+const BACKOFF_CAP_MS = 20000;
+const RETRY_AFTER_CAP_MS = 60000;
 const NETWORK_FIRST = new Set(['data/routes.json', 'asset-manifest.json']);
 const scopePath = new URL(self.registration.scope).pathname;
 
@@ -15,6 +22,65 @@ async function sha256Hex(buf) {
   return Array.from(d, (x) => x.toString(16).padStart(2, '0')).join('');
 }
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* ---------- retrying fetch ---------- */
+function retryAfterMs(r) {
+  const h = r.headers.get('retry-after');
+  if (!h) return 0;
+  const secs = Number(h);
+  if (Number.isFinite(secs)) return Math.max(0, secs * 1000);
+  const t = Date.parse(h);
+  return Number.isNaN(t) ? 0 : Math.max(0, t - Date.now());
+}
+
+/* Runs attempt() until it succeeds. attempt throws an Error with .retryable (and optional .retryAfter ms)
+   for transient failures; anything else (404 ...) is final. Network failures (TypeError) are transient. */
+async function withRetry(label, attempt) {
+  let last;
+  for (let n = 0; n < MAX_ATTEMPTS; n++) {
+    try { return await attempt(); }
+    catch (err) {
+      last = err;
+      const transient = err && (err.retryable || err instanceof TypeError);
+      if (!transient || n === MAX_ATTEMPTS - 1) break;
+      const backoff = Math.min(BACKOFF_CAP_MS, BACKOFF_BASE_MS * 2 ** n) * (0.75 + Math.random() * 0.5);
+      await sleep(Math.max(backoff, Math.min(RETRY_AFTER_CAP_MS, err.retryAfter || 0)));
+    }
+  }
+  throw new Error('precache ' + label + ': ' + (last && last.message || last));
+}
+
+function httpError(label, r) {
+  const e = new Error(label + ' HTTP ' + r.status);
+  e.retryable = r.status === 429 || r.status >= 500;
+  e.retryAfter = retryAfterMs(r);
+  return e;
+}
+
+/* fetch + status check + retry. Returns an ok Response. */
+function fetchRetry(path, opts) {
+  return withRetry(path, async () => {
+    const r = await fetch(path, opts);
+    if (!r.ok) throw httpError(path, r);
+    return r;
+  });
+}
+
+/* Run fn(item) over items with at most `limit` in flight. Stops starting new work after a failure. */
+async function pool(items, limit, fn) {
+  let i = 0, failed = null;
+  const worker = async () => {
+    while (!failed && i < items.length) {
+      const item = items[i++];
+      try { await fn(item); } catch (e) { failed = failed || e; }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  if (failed) throw failed;
+}
+
+/* ---------- previous cache (delta) ---------- */
 /* Path -> sha256 of the newest COMPLETE older cache, via the manifest stored in that cache. */
 async function previousCache(version) {
   for (const c of await completeCaches()) {
@@ -43,43 +109,147 @@ async function copyFromPrevious(prev, cache, f) {
   return true;
 }
 
+/* ---------- packs ---------- */
+/* Download a whole pack as one Uint8Array, reporting byte progress; retried as a unit (sha256 checked). */
+function fetchPack(pack, onBytes) {
+  return withRetry(pack.path, async () => {
+    const r = await fetch(pack.path, { cache: 'no-store' });
+    if (!r.ok) throw httpError(pack.path, r);
+    let buf;
+    if (r.body && r.body.getReader) {
+      const reader = r.body.getReader();
+      const chunks = [];
+      let got = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        got += value.length;
+        onBytes(got / pack.bytes);
+      }
+      buf = new Uint8Array(got);
+      let o = 0;
+      for (const c of chunks) { buf.set(c, o); o += c.length; }
+    } else buf = new Uint8Array(await r.arrayBuffer());
+    if (buf.length !== pack.bytes || (await sha256Hex(buf)) !== pack.sha256) {
+      const e = new Error(pack.path + ' failed length/sha256 check');
+      e.retryable = true;
+      throw e;
+    }
+    return buf;
+  });
+}
+
+/* Parse a .kpack: [u32 LE header length][JSON header][data]; offsets are relative to the data start. */
+function parsePack(buf, pack) {
+  const hlen = new DataView(buf.buffer, buf.byteOffset, 4).getUint32(0, true);
+  const header = JSON.parse(new TextDecoder().decode(buf.subarray(4, 4 + hlen)));
+  const base = 4 + hlen;
+  const want = new Set(pack.files);
+  for (const h of header.files) {
+    if (!want.has(h.path) || base + h.offset + h.bytes > buf.length) throw new Error(pack.path + ' header mismatch');
+  }
+  return { header: header.files, base };
+}
+
 async function precache(version, manifest) {
   const cache = await caches.open(PREFIX + version);
   const files = manifest.files;
-  let done = 0, copied = 0;
+  const byPath = new Map(files.map((f) => [f.path, f]));
   const total = files.length;
   const prev = await previousCache(version);
-  const todo = [];
-  for (const f of files) if (!(await cache.match(f.path))) todo.push(f); else done++;
-  await broadcast({ type: 'precache-progress', version, done, total });
-  const fetchList = [];
-  // Unchanged files are copied cache-to-cache (no network); only new or changed files are fetched.
-  for (let i = 0; i < todo.length; i += BATCH * 2) {
-    await Promise.all(todo.slice(i, i + BATCH * 2).map(async (f) => {
-      let ok = false;
-      try { ok = await copyFromPrevious(prev, cache, f); } catch { ok = false; }
-      if (ok) { done++; copied++; } else fetchList.push(f);
-    }));
-    if (prev) await broadcast({ type: 'precache-progress', version, done, total });
+
+  // Resume: skip anything an interrupted earlier attempt already stored.
+  const have = new Set();
+  for (const r of await cache.keys()) {
+    let p = decodeURIComponent(new URL(r.url).pathname);
+    p = p.startsWith(scopePath) ? p.slice(scopePath.length) : p.replace(/^\//, '');
+    have.add(p);
   }
-  for (let i = 0; i < fetchList.length; i += BATCH) {
-    await Promise.all(fetchList.slice(i, i + BATCH).map(async (f) => {
-      const r = await fetch(f.path, { cache: 'reload' });
-      if (!r.ok) throw new Error('precache ' + f.path + ' ' + r.status);
-      await cache.put(f.path, r);
-      done++;
-    }));
-    await broadcast({ type: 'precache-progress', version, done, total });
-  }
+
+  let done = 0, copied = 0, requests = 1;  // 1 = the manifest
+  const credit = new Set();  // fractional progress of packs in flight: {n: files}
+  let lastReport = 0;
+  const report = async (force) => {
+    const now = Date.now();
+    if (!force && now - lastReport < 120) return;
+    lastReport = now;
+    let frac = 0;
+    for (const c of credit) frac += c.n;
+    await broadcast({ type: 'precache-progress', version, done: Math.min(total, Math.floor(done + frac)), total });
+  };
+
+  const packs = (manifest.packs || []).filter((p) => p.files.every((x) => byPath.has(x)));
+  const packed = new Set();
+  for (const p of packs) for (const x of p.files) packed.add(x);
+
+  for (const f of files) if (have.has(f.path)) done++;
+  await report(true);
+
+  // Individual (non-pack) files: copy from the previous cache when unchanged, otherwise fetch.
+  const singles = files.filter((f) => !packed.has(f.path) && !have.has(f.path));
+  await pool(singles, CONCURRENCY, async (f) => {
+    let ok = false;
+    try { ok = await copyFromPrevious(prev, cache, f); } catch { ok = false; }
+    if (ok) copied++;
+    else {
+      requests++;
+      await cache.put(f.path, await fetchRetry(f.path, { cache: 'reload' }));
+    }
+    done++;
+    await report(false);
+  });
+
+  // Packs: copy from the previous cache when every file matches by sha256, otherwise fetch the pack.
+  const packTodo = packs.filter((p) => p.files.some((x) => !have.has(x)));
+  await pool(packTodo, CONCURRENCY, async (pack) => {
+    const need = pack.files.filter((x) => !have.has(x));
+    const c = { n: 0 };
+    credit.add(c);
+    try {
+      if (prev && pack.files.every((x) => prev.sha.get(x) === byPath.get(x).sha256)) {
+        let ok = true, n = 0;
+        for (const x of need) {
+          try { ok = await copyFromPrevious(prev, cache, byPath.get(x)); } catch { ok = false; }
+          if (!ok) break;
+          c.n = ++n;
+          await report(false);
+        }
+        if (ok) { copied += need.length; return; }
+        c.n = 0;
+      }
+      requests++;
+      const buf = await fetchPack(pack, (frac) => { c.n = 0.5 * need.length * frac; report(false); });
+      c.n = 0.5 * need.length;
+      const { header, base } = parsePack(buf, pack);
+      const needSet = new Set(need);
+      let k = 0;
+      for (const h of header) {
+        if (!needSet.has(h.path)) continue;
+        const body = buf.slice(base + h.offset, base + h.offset + h.bytes);
+        await cache.put(h.path, new Response(body, { status: 200, headers: { 'content-type': h.type, 'content-length': String(h.bytes) } }));
+        c.n = 0.5 * need.length + 0.5 * ++k;
+        if (k % 25 === 0) await report(false);
+      }
+    } finally {
+      credit.delete(c);
+      done += need.length;
+      await report(true);
+    }
+  });
+
   await cache.put('asset-manifest.json', new Response(JSON.stringify(manifest), { headers: { 'content-type': 'application/json' } }));
   await cache.put(MARKER, new Response(String(Date.now())));
-  await broadcast({ type: 'precache-done', version, done, total, copied, fetched: fetchList.length });
+  await broadcast({ type: 'precache-done', version, done, total, copied, requests });
 }
 
 self.addEventListener('install', (e) => {
   e.waitUntil((async () => {
-    const r = await fetch('asset-manifest.json', { cache: 'no-store' });
-    if (!r.ok) throw new Error('manifest ' + r.status);
+    const r = await withRetry('asset-manifest.json', async () => {
+      const x = await fetch('asset-manifest.json', { cache: 'no-store' });
+      if (!x.ok) throw httpError('asset-manifest.json', x);
+      return x;
+    });
     const manifest = await r.json();
     await precache(manifest.version, manifest);
     await self.skipWaiting();

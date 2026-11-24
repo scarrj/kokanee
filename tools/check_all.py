@@ -105,7 +105,7 @@ def manifest_fresh():
         if not p.is_file():
             continue
         rel = p.relative_to(WEB).as_posix()
-        if rel in ("sw.js", "asset-manifest.json") or any(s.startswith(".") for s in rel.split("/")):
+        if rel in ("sw.js", "asset-manifest.json") or rel.startswith("packs/") or any(s.startswith(".") for s in rel.split("/")):
             continue
         actual.add(rel)
         f = listed.get(rel)
